@@ -59,6 +59,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^4.33.0
     version: 4.36.1(react-dom@18.2.0)(react@18.2.0)
+  '@types/flake-idgen':
+    specifier: ^0.1.33
+    version: 0.1.33
   '@types/node':
     specifier: 20.5.1
     version: 20.5.1
@@ -77,6 +80,9 @@ dependencies:
   axios:
     specifier: ^1.4.0
     version: 1.6.0
+  biguint-format:
+    specifier: ^1.0.2
+    version: 1.0.2
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -98,6 +104,9 @@ dependencies:
   eslint-config-next:
     specifier: 13.4.12
     version: 13.4.12(eslint@8.47.0)(typescript@5.1.6)
+  flake-idgen:
+    specifier: ^1.4.0
+    version: 1.4.0
   livekit-client:
     specifier: ^1.13.0
     version: 1.14.2
@@ -1783,6 +1792,12 @@ packages:
       '@types/serve-static': 1.15.4
     dev: false
 
+  /@types/flake-idgen@0.1.33:
+    resolution: {integrity: sha512-jR8vRPnXxhbhe8s02JSxpuybA14daRee2k048LALYbainTck41il91uIv8vh2R3IZmKtjMA3dN47lGmZ3C2HuQ==}
+    dependencies:
+      '@types/node': 20.5.1
+    dev: false
+
   /@types/http-errors@2.0.3:
     resolution: {integrity: sha512-pP0P/9BnCj1OVvQR2lF41EkDG/lWWnDyA203b/4Fmi2eTyORnBtcDoKDwjWQthELrBvWkMOrvSOnZ8OVlW6tXA==}
     dev: false
@@ -2198,6 +2213,10 @@ packages:
   /base64id@2.0.0:
     resolution: {integrity: sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==}
     engines: {node: ^4.5.0 || >= 5.9}
+    dev: false
+
+  /biguint-format@1.0.2:
+    resolution: {integrity: sha512-A9/8NoHnszWRAp4WCrgwe70wMd0FVDB3pXTdKs78z3pgwHRhc/BGU3uO7Wmfp9ueWD5WpmncL1OpypGnvc1R3w==}
     dev: false
 
   /binary-extensions@2.2.0:
@@ -3040,6 +3059,10 @@ packages:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
+    dev: false
+
+  /flake-idgen@1.4.0:
+    resolution: {integrity: sha512-l+dtBcIAwAPqmtDelZAAw0NzKOBosiu/3hAFH69W3n1rH8wkKN1hUp6SaR1tmH/NmzaCUQs1BFKULKVhqGWdMw==}
     dev: false
 
   /flat-cache@3.1.1:

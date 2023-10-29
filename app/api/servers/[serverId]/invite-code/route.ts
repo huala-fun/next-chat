@@ -1,8 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { NextId } from "@/lib/flake-id-gen";
 
 export async function PATCH(
   req: Request,
@@ -25,7 +25,7 @@ export async function PATCH(
         profileId: profile.id,
       },
       data: {
-        inviteCode: uuidv4(),
+        inviteCode: NextId(),
       },
     });
 

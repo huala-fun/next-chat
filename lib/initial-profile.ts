@@ -1,6 +1,7 @@
 import { currentUser, redirectToSignIn } from "@clerk/nextjs";
 
 import { db } from "@/lib/db";
+import { NextId } from "./flake-id-gen";
 
 export const initialProfile = async () => {
   const user = await currentUser();
@@ -21,6 +22,7 @@ export const initialProfile = async () => {
 
   const newProfile = await db.profile.create({
     data: {
+      id: NextId(),
       userId: user.id,
       name: `${user.firstName} ${user.lastName}`,
       imageUrl: user.imageUrl,

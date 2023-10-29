@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from "uuid";
 import { NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { NextId } from "@/lib/flake-id-gen";
 
 export async function POST(req: Request) {
   try {
@@ -16,18 +16,19 @@ export async function POST(req: Request) {
 
     const server = await db.server.create({
       data: {
+        id: NextId(),
         profileId: profile.id,
         name,
         imageUrl,
-        inviteCode: uuidv4(),
+        inviteCode: NextId(),
         channels: {
           create: [
-            { name: "general", profileId: profile.id }
+            { id: NextId(), name: "general", profileId: profile.id }
           ]
         },
         members: {
           create: [
-            { profileId: profile.id, role: MemberRole.ADMIN }
+            { id: NextId(), profileId: profile.id, role: MemberRole.ADMIN }
           ]
         }
       }

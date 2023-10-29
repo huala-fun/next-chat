@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { NextId } from "./flake-id-gen";
 
 export const getOrCreateConversation = async (memberOneId: string, memberTwoId: string) => {
   let conversation = await findConversation(memberOneId, memberTwoId) || await findConversation(memberTwoId, memberOneId);
@@ -41,6 +42,7 @@ const createNewConversation = async (memberOneId: string, memberTwoId: string) =
   try {
     return await db.conversation.create({
       data: {
+        id:NextId(),
         memberOneId,
         memberTwoId,
       },

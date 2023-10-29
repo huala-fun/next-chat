@@ -3,6 +3,7 @@ import { MemberRole } from "@prisma/client";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
+import { NextId } from "@/lib/flake-id-gen";
 
 export async function POST(
   req: Request
@@ -41,6 +42,7 @@ export async function POST(
       data: {
         channels: {
           create: {
+            id: NextId(),
             profileId: profile.id,
             name,
             type,
