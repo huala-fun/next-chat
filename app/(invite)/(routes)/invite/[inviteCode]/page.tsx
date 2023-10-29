@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
+import { NextId } from "@/lib/flake-id-gen";
 
 interface InviteCodePageProps {
   params: {
@@ -46,6 +47,7 @@ const InviteCodePage = async ({
       members: {
         create: [
           {
+            id: NextId(),
             profileId: profile.id,
           }
         ]
@@ -56,8 +58,8 @@ const InviteCodePage = async ({
   if (server) {
     return redirect(`/servers/${server.id}`);
   }
-  
+
   return null;
 }
- 
+
 export default InviteCodePage;
