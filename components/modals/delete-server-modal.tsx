@@ -63,7 +63,7 @@ export const DeleteServerModal = () => {
             </Button>
             <Button
               disabled={isLoading}
-              variant="primary"
+              
               onClick={onClick}
             >
               Confirm
