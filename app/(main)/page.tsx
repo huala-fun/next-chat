@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 
+import Home from "@/components/home";
+
 const SetupPage = async () => {
   const profile = await initialProfile();
   const server = await db.group.findFirst({
@@ -17,7 +19,11 @@ const SetupPage = async () => {
   if (server) {
     return redirect(`/group/${server.id}`);
   }
-  return null;
+
+
+  return (
+    <Home />
+  );
 }
- 
+
 export default SetupPage;
