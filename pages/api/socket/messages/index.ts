@@ -18,7 +18,6 @@ export default async function handler(
     const profile = await currentProfilePages(req);
     const { content, fileUrl } = req.body;
     const { groupId, channelId } = req.query;
-
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
     }
@@ -31,8 +30,6 @@ export default async function handler(
     if (!content) {
       return res.status(400).json({ error: "Content missing" });
     }
-
-
     const server = await db.group.findFirst({
       where: {
         id: groupId as string,
@@ -64,7 +61,7 @@ export default async function handler(
     const member = server.members.find(
       (member) => member.profileId === profile.id
     );
-    
+
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }

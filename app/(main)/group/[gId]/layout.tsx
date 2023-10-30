@@ -35,7 +35,7 @@ const IdLayout = async ({
         className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <Sidebar groupId={params.gId} />
       </div>
-      <main className="min-h-screen md:pl-60 bg-white dark:bg-[#313338] flex flex-col">
+      <main className="h-screen md:pl-60 bg-white dark:bg-[#313338] flex flex-col">
         {children}
       </main>
     </div>

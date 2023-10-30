@@ -12,9 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ModeToggle() {
-  const { setTheme } = useTheme()
 
+const ThemeSwitch = () => {
+  const { setTheme } = useTheme()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,7 +24,7 @@ export function ModeToggle() {
           <span className="sr-only">切换主题</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent>
         <DropdownMenuItem onClick={() => setTheme("light")}>
           明亮模式
         </DropdownMenuItem>
@@ -38,3 +38,4 @@ export function ModeToggle() {
     </DropdownMenu>
   )
 }
+export default ThemeSwitch;

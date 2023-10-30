@@ -10,6 +10,8 @@ import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 
 import { FaceIcon, ImageIcon, ResetIcon } from '@radix-ui/react-icons'
 
+import htmlParser from 'html-react-parser';
+
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -185,19 +187,21 @@ export const ChatItem = ({
 
 
           {!fileUrl && !isEditing && (
-            <p className={cn(
-              "text-sm text-zinc-600 dark:text-zinc-300",
+            <div className={cn(
+              "text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line",
               deleted && "italic text-zinc-500 dark:text-zinc-400 text-xs mt-1"
             )}>
-              {content}
+              {
+                htmlParser(`${content}`)
+              }
               {isUpdated && !deleted && (
                 <span className="text-[10px] mx-2 text-zinc-500 dark:text-zinc-400">
                   (edited)
                 </span>
               )}
-            </p>
+            </div>
           )}
-          
+
           {!fileUrl && isEditing && (
             <Form {...form}>
               <form
@@ -230,6 +234,8 @@ export const ChatItem = ({
               </span>
             </Form>
           )}
+
+
         </div>
       </div>
 
