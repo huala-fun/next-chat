@@ -74,7 +74,7 @@ export const ChatItem = ({
       return;
     }
 
-    router.push(`/group/${params?.serverId}/conversations/${member.id}`);
+    router.push(`/group/${params?.groupId}/conversations/${member.id}`);
   }
 
   useEffect(() => {
@@ -150,6 +150,8 @@ export const ChatItem = ({
               {timestamp}
             </span>
           </div>
+
+
           {isImage && (
             <a
               href={fileUrl}
@@ -165,6 +167,8 @@ export const ChatItem = ({
               />
             </a>
           )}
+
+
           {isPDF && (
             <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
               <FileIcon className="h-10 w-10 fill-indigo-200 stroke-indigo-400" />
@@ -178,6 +182,8 @@ export const ChatItem = ({
               </a>
             </div>
           )}
+
+
           {!fileUrl && !isEditing && (
             <p className={cn(
               "text-sm text-zinc-600 dark:text-zinc-300",
@@ -191,6 +197,7 @@ export const ChatItem = ({
               )}
             </p>
           )}
+          
           {!fileUrl && isEditing && (
             <Form {...form}>
               <form
@@ -225,6 +232,8 @@ export const ChatItem = ({
           )}
         </div>
       </div>
+
+
       {canDeleteMessage && (
         <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
           {canEditMessage && (

@@ -21,7 +21,7 @@ export const DeleteChannelModal = () => {
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "deleteChannel";
-  const { server, channel } = data;
+  const { group, channel } = data;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,9 +29,9 @@ export const DeleteChannelModal = () => {
     try {
       setIsLoading(true);
       const url = qs.stringifyUrl({
-        url: `/api/channels/${channel?.id}`,
+        url: `/api/channel/${channel?.id}`,
         query: {
-          serverId: server?.id,
+          groupId: group?.id,
         }
       })
 
@@ -39,7 +39,7 @@ export const DeleteChannelModal = () => {
 
       onClose();
       router.refresh();
-      router.push(`/group/${server?.id}`);
+      router.push(`/group/${group?.id}`);
     } catch (error) {
       console.log(error);
     } finally {

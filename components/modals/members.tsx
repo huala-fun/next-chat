@@ -24,7 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
-import { ServerWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithProfiles } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserAvatar } from "@/components/user-avatar";
 import {
@@ -51,22 +51,22 @@ export const MembersModal = () => {
   const [loadingId, setLoadingId] = useState("");
 
   const isModalOpen = isOpen && type === "members";
-  const { server } = data as { server: ServerWithMembersWithProfiles };
+  const { server } = data as { server: GroupWithMembersWithProfiles };
 
   const onKick = async (memberId: string) => {
     try {
       setLoadingId(memberId);
       const url = qs.stringifyUrl({
-        url: `/api/members/${memberId}`,
+        url: `/api/member/${memberId}`,
         query: {
-          serverId: server?.id,
+          groupId: server?.id,
         },
       });
 
       const response = await axios.delete(url);
 
       router.refresh();
-      onOpen("members", { server: response.data });
+      onOpen("members", { group: response.data });
     } catch (error) {
       console.log(error);
     } finally {
@@ -78,16 +78,16 @@ export const MembersModal = () => {
     try {
       setLoadingId(memberId);
       const url = qs.stringifyUrl({
-        url: `/api/members/${memberId}`,
+        url: `/api/member/${memberId}`,
         query: {
-          serverId: server?.id,
+          groupId: server?.id,
         }
       });
 
       const response = await axios.patch(url, { role });
 
       router.refresh();
-      onOpen("members", { server: response.data });
+      onOpen("members", { group: response.data });
     } catch (error) {
       console.log(error);
     } finally {

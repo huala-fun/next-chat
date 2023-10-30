@@ -6,7 +6,7 @@ import { NextId } from "@/lib/flake-id-gen";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { groupId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -15,13 +15,13 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverId) {
-      return new NextResponse("Server ID Missing", { status: 400 });
+    if (!params.groupId) {
+      return new NextResponse("Group ID Missing", { status: 400 });
     }
 
-    const server = await db.server.update({
+    const server = await db.group.update({
       where: {
-        id: params.serverId,
+        id: params.groupId,
         profileId: profile.id,
       },
       data: {

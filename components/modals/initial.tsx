@@ -29,10 +29,10 @@ import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "Server name is required."
+    message: "Group name is required."
   }),
   imageUrl: z.string().min(1, {
-    message: "Server image is required."
+    message: "Group image is required."
   })
 });
 
@@ -57,7 +57,7 @@ export const InitialModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("/api/servers", values);
+      await axios.post("/api/group", values);
 
       form.reset();
       router.refresh();

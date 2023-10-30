@@ -52,7 +52,7 @@ export const EditChannelModal = () => {
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "editChannel";
-  const { channel, server } = data;
+  const { channel, group } = data;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -74,9 +74,9 @@ export const EditChannelModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: `/api/channels/${channel?.id}`,
+        url: `/api/channel/${channel?.id}`,
         query: {
-          serverId: server?.id
+          groupId: group?.id
         }
       });
       await axios.patch(url, values);

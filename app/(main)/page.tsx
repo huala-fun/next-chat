@@ -5,7 +5,7 @@ import { initialProfile } from "@/lib/initial-profile";
 
 const SetupPage = async () => {
   const profile = await initialProfile();
-  const server = await db.server.findFirst({
+  const server = await db.group.findFirst({
     where: {
       members: {
         some: {

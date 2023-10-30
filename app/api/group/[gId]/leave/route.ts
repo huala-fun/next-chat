@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { groupId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -14,13 +14,13 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.serverId) {
-      return new NextResponse("Server ID missing", { status: 400 });
+    if (!params.groupId) {
+      return new NextResponse("Group ID missing", { status: 400 });
     }
 
-    const server = await db.server.update({
+    const server = await db.group.update({
       where: {
-        id: params.serverId,
+        id: params.groupId,
         profileId: {
           not: profile.id
         },

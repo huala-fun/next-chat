@@ -18,7 +18,7 @@ CREATE TABLE "Profile" (
 );
 
 -- CreateTable
-CREATE TABLE "Server" (
+CREATE TABLE "Group" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "imageUrl" TEXT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE "Server" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Server_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Group_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -35,7 +35,7 @@ CREATE TABLE "Member" (
     "id" TEXT NOT NULL,
     "role" "MemberRole" NOT NULL DEFAULT 'GUEST',
     "profileId" TEXT NOT NULL,
-    "serverId" TEXT NOT NULL,
+    "groupId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -48,7 +48,7 @@ CREATE TABLE "Channel" (
     "name" TEXT NOT NULL,
     "type" "ChannelType" NOT NULL DEFAULT 'TEXT',
     "profileId" TEXT NOT NULL,
-    "serverId" TEXT NOT NULL,
+    "groupId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -96,22 +96,22 @@ CREATE TABLE "DirectMessage" (
 CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Server_inviteCode_key" ON "Server"("inviteCode");
+CREATE UNIQUE INDEX "Group_inviteCode_key" ON "Group"("inviteCode");
 
 -- CreateIndex
-CREATE INDEX "Server_profileId_idx" ON "Server"("profileId");
+CREATE INDEX "Group_profileId_idx" ON "Group"("profileId");
 
 -- CreateIndex
 CREATE INDEX "Member_profileId_idx" ON "Member"("profileId");
 
 -- CreateIndex
-CREATE INDEX "Member_serverId_idx" ON "Member"("serverId");
+CREATE INDEX "Member_groupId_idx" ON "Member"("groupId");
 
 -- CreateIndex
 CREATE INDEX "Channel_profileId_idx" ON "Channel"("profileId");
 
 -- CreateIndex
-CREATE INDEX "Channel_serverId_idx" ON "Channel"("serverId");
+CREATE INDEX "Channel_groupId_idx" ON "Channel"("groupId");
 
 -- CreateIndex
 CREATE INDEX "Message_channelId_idx" ON "Message"("channelId");

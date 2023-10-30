@@ -15,12 +15,12 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
-export const LeaveServerModal = () => {
+export const LeaveModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "leaveServer";
-  const { server } = data;
+  const isModalOpen = isOpen && type === "leaveGroup";
+  const { group } = data;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export const LeaveServerModal = () => {
     try {
       setIsLoading(true);
 
-      await axios.patch(`/api/servers/${server?.id}/leave`);
+      await axios.patch(`/api/group/${group?.id}/leave`);
 
       onClose();
       router.refresh();
@@ -48,7 +48,7 @@ export const LeaveServerModal = () => {
             离开群组
           </DialogTitle>
           <DialogDescription className=" text-zinc-500">
-            此操作将会离开<span className="font-semibold text-indigo-500">{server?.name}</span> 群组 ,是否继续?
+            此操作将会离开<span className="font-semibold text-indigo-500">{group?.name}</span> 群组 ,是否继续?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="bg-gray-100">

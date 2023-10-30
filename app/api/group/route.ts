@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const server = await db.server.create({
+    const server = await db.group.create({
       data: {
         id: NextId(),
         profileId: profile.id,

@@ -1,14 +1,15 @@
 import { NextApiRequest } from "next";
 
-import { NextApiResponseServerIo } from "@/types";
+import { NextApiResponseIo } from "@/types";
 import { currentProfilePages } from "@/lib/current-profile-pages";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponseServerIo
+  res: NextApiResponseIo
 ) {
+  // POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -16,27 +17,25 @@ export default async function handler(
   try {
     const profile = await currentProfilePages(req);
     const { content, fileUrl } = req.body;
-    const { serverId, channelId } = req.query;
+    const { groupId, channelId } = req.query;
 
     if (!profile) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
-    if (!serverId) {
-      return res.status(400).json({ error: "Server ID missing" });
+    if (!groupId) {
+      return res.status(400).json({ error: "Group ID missing" });
     }
-
     if (!channelId) {
       return res.status(400).json({ error: "Channel ID missing" });
     }
-
     if (!content) {
       return res.status(400).json({ error: "Content missing" });
     }
 
-    const server = await db.server.findFirst({
+
+    const server = await db.group.findFirst({
       where: {
-        id: serverId as string,
+        id: groupId as string,
         members: {
           some: {
             profileId: profile.id,
@@ -47,15 +46,14 @@ export default async function handler(
         members: true,
       },
     });
-
     if (!server) {
-      return res.status(404).json({ message: "Server not found" });
+      return res.status(404).json({ message: "Group not found" });
     }
 
     const channel = await db.channel.findFirst({
       where: {
         id: channelId as string,
-        serverId: serverId as string,
+        groupId: groupId as string,
       },
     });
 
@@ -66,7 +64,7 @@ export default async function handler(
     const member = server.members.find(
       (member) => member.profileId === profile.id
     );
-
+    
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
@@ -89,9 +87,7 @@ export default async function handler(
     });
 
     const channelKey = `chat:${channelId}:messages`;
-
     res?.socket?.server?.io?.emit(channelKey, message);
-
     return res.status(200).json(message);
   } catch (error) {
     console.log("[MESSAGES_POST]", error);

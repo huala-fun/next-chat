@@ -62,7 +62,9 @@ export const ChatMessages = ({
     paramKey,
     paramValue,
   });
+
   useChatSocket({ queryKey, addKey, updateKey });
+
   useChatScroll({
     chatRef,
     bottomRef,
@@ -102,6 +104,7 @@ export const ChatMessages = ({
           name={name}
         />
       )}
+      {/* 加载消息 */}
       {hasNextPage && (
         <div className="flex justify-center">
           {isFetchingNextPage ? (
@@ -116,6 +119,7 @@ export const ChatMessages = ({
           )}
         </div>
       )}
+      {/* 渲染消息 */}
       <div className="flex flex-col-reverse mt-auto">
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ServerWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithProfiles } from "@/types";
 import { MemberRole } from "@prisma/client";
 import { 
   ChevronDown, 
@@ -21,15 +21,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useModal } from "@/hooks/use-modal-store";
 
-interface ServerHeaderProps {
-  server: ServerWithMembersWithProfiles;
+interface GroupHeaderProps {
+  group: GroupWithMembersWithProfiles;
   role?: MemberRole;
 };
 
-export const ServerHeader = ({
-  server,
+export const GroupHeader = ({
+  group,
   role
-}: ServerHeaderProps) => {
+}: GroupHeaderProps) => {
   const { onOpen } = useModal();
 
   const isAdmin = role === MemberRole.ADMIN;
@@ -44,7 +44,7 @@ export const ServerHeader = ({
         <button
           className="w-full text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
         >
-          {server.name}
+          {group.name}
           <ChevronDown className="h-5 w-5 ml-auto" />
         </button>
       </DropdownMenuTrigger>
@@ -53,7 +53,7 @@ export const ServerHeader = ({
       >
         {isModerator && (
           <DropdownMenuItem
-            onClick={() => onOpen("invite", { server })}
+            onClick={() => onOpen("invite", { group })}
             className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
           >
             邀请好友
@@ -62,7 +62,7 @@ export const ServerHeader = ({
         )}
         {isAdmin && (
           <DropdownMenuItem
-            onClick={() => onOpen("editServer", { server })}
+            onClick={() => onOpen("editGroup", { group })}
             className="px-3 py-2 text-sm cursor-pointer"
           >
             群组设置
@@ -71,7 +71,7 @@ export const ServerHeader = ({
         )}
         {isAdmin && (
           <DropdownMenuItem
-            onClick={() => onOpen("members", { server })}
+            onClick={() => onOpen("members", { group })}
             className="px-3 py-2 text-sm cursor-pointer"
           >
             成员管理
@@ -92,7 +92,7 @@ export const ServerHeader = ({
         )}
         {isAdmin && (
           <DropdownMenuItem
-            onClick={() => onOpen("deleteServer", { server })}
+            onClick={() => onOpen("deleteGroup", { group })}
             className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
           >
            删除群组
@@ -101,7 +101,7 @@ export const ServerHeader = ({
         )}
         {!isAdmin && (
           <DropdownMenuItem
-            onClick={() => onOpen("leaveServer", { server })}
+            onClick={() => onOpen("leaveGroup", { group })}
             className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
           >
             离开群组

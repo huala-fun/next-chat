@@ -24,7 +24,7 @@ const InviteCodePage = async ({
     return redirect("/");
   }
 
-  const existingServer = await db.server.findFirst({
+  const existing = await db.group.findFirst({
     where: {
       inviteCode: params.inviteCode,
       members: {
@@ -35,11 +35,11 @@ const InviteCodePage = async ({
     }
   });
 
-  if (existingServer) {
-    return redirect(`/group/${existingServer.id}`);
+  if (existing) {
+    return redirect(`/group/${existing.id}`);
   }
 
-  const server = await db.server.update({
+  const server = await db.group.update({
     where: {
       inviteCode: params.inviteCode,
     },

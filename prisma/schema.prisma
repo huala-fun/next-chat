@@ -15,7 +15,7 @@ model Profile {
   imageUrl String @db.Text
   email String @db.Text
 
-  servers Server[]
+  groups Group[]
   members Member[]
   channels Channel[]
 
@@ -23,7 +23,7 @@ model Profile {
   updatedAt DateTime @updatedAt
 }
 
-model Server {
+model Group {
   id String @id 
   name String
   imageUrl String @db.Text
@@ -54,8 +54,8 @@ model Member {
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
-  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  groupId String
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   messages Message[]
   directMessages DirectMessage[]
@@ -67,7 +67,7 @@ model Member {
   updatedAt DateTime @updatedAt
 
   @@index([profileId])
-  @@index([serverId])
+  @@index([groupId])
 }
 
 enum ChannelType {
@@ -84,8 +84,8 @@ model Channel {
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  serverId String
-  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  groupId String
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   messages Message[]
 
@@ -93,7 +93,7 @@ model Channel {
   updatedAt DateTime @updatedAt
 
   @@index([profileId])
-  @@index([serverId])
+  @@index([groupId])
 }
 
 model Message {

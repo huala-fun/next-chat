@@ -12,7 +12,7 @@ import { MediaRoom } from "@/components/media-room";
 interface MemberIdPageProps {
   params: {
     memberId: string;
-    serverId: string;
+    groupId: string;
   },
   searchParams: {
     video?: boolean;
@@ -31,7 +31,7 @@ const MemberIdPage = async ({
 
   const currentMember = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      groupId: params.groupId,
       profileId: profile.id,
     },
     include: {
@@ -46,7 +46,7 @@ const MemberIdPage = async ({
   const conversation = await getOrCreateConversation(currentMember.id, params.memberId);
 
   if (!conversation) {
-    return redirect(`/group/${params.serverId}`);
+    return redirect(`/group/${params.groupId}`);
   }
 
   const { memberOne, memberTwo } = conversation;
@@ -58,7 +58,7 @@ const MemberIdPage = async ({
       <ChatHeader
         imageUrl={otherMember.profile.imageUrl}
         name={otherMember.profile.name}
-        serverId={params.serverId}
+        groupId={params.groupId}
         type="conversation"
       />
       {searchParams.video && (
@@ -75,7 +75,7 @@ const MemberIdPage = async ({
             name={otherMember.profile.name}
             chatId={conversation.id}
             type="conversation"
-            apiUrl="/api/direct-messages"
+            apiUrl="/api/direct-message"
             paramKey="conversationId"
             paramValue={conversation.id}
             socketUrl="/api/socket/direct-messages"

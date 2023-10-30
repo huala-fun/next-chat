@@ -11,7 +11,7 @@ import { db } from "@/lib/db";
 
 interface ChannelIdPageProps {
   params: {
-    serverId: string;
+    groupId: string;
     channelId: string;
   }
 }
@@ -33,7 +33,7 @@ const ChannelIdPage = async ({
 
   const member = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      groupId: params.groupId,
       profileId: profile.id,
     }
   });
@@ -46,7 +46,7 @@ const ChannelIdPage = async ({
     <>
       <ChatHeader
         name={channel.name}
-        serverId={channel.serverId}
+        groupId={channel.groupId}
         type="channel"
       />
       {channel.type === ChannelType.TEXT && (
@@ -56,11 +56,11 @@ const ChannelIdPage = async ({
             name={channel.name}
             chatId={channel.id}
             type="channel"
-            apiUrl="/api/messages"
+            apiUrl="/api/message"
             socketUrl="/api/socket/messages"
             socketQuery={{
               channelId: channel.id,
-              serverId: channel.serverId,
+              groupId: channel.groupId,
             }}
             paramKey="channelId"
             paramValue={channel.id}
@@ -71,7 +71,7 @@ const ChannelIdPage = async ({
             apiUrl="/api/socket/messages"
             query={{
               channelId: channel.id,
-              serverId: channel.serverId,
+              groupId: channel.groupId,
             }}
           />
         </>

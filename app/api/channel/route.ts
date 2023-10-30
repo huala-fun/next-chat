@@ -13,23 +13,23 @@ export async function POST(
     const { name, type } = await req.json();
     const { searchParams } = new URL(req.url);
 
-    const serverId = searchParams.get("serverId");
+    const groupId = searchParams.get("groupId");
 
     if (!profile) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!serverId) {
-      return new NextResponse("Server ID missing", { status: 400 });
+    if (!groupId) {
+      return new NextResponse("Group ID missing", { status: 400 });
     }
 
     if (name === "general") {
       return new NextResponse("Name cannot be 'general'", { status: 400 });
     }
 
-    const server = await db.server.update({
+    const server = await db.group.update({
       where: {
-        id: serverId,
+        id: groupId,
         members: {
           some: {
             profileId: profile.id,

@@ -2,9 +2,9 @@ import { redirectToSignIn } from "@clerk/nextjs";
 
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
-import { ServerSidebar } from "@/components/group/sidebar";
+import { Sidebar } from "@/components/group/sidebar";
 
-const ServerIdLayout = async ({
+const IdLayout = async ({
   children,
   params,
 }: {
@@ -17,7 +17,7 @@ const ServerIdLayout = async ({
     return redirectToSignIn();
   }
 
-  const server = await db.server.findUnique({
+  const server = await db.group.findUnique({
     where: {
       id: params.gId,
       members: {
@@ -33,7 +33,7 @@ const ServerIdLayout = async ({
     <div className="min-h-screen">
       <div
         className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
-        <ServerSidebar serverId={params.gId} />
+        <Sidebar groupId={params.gId} />
       </div>
       <main className="min-h-screen md:pl-60 bg-white dark:bg-[#313338] flex flex-col">
         {children}
@@ -42,4 +42,4 @@ const ServerIdLayout = async ({
   );
 }
 
-export default ServerIdLayout;
+export default IdLayout;

@@ -29,18 +29,18 @@ import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "Server name is required."
+    message: "Group name is required."
   }),
   imageUrl: z.string().min(1, {
-    message: "Server image is required."
+    message: "Group image is required."
   })
 });
 
-export const CreateServerModal = () => {
+export const CreateModal = () => {
   const { isOpen, onClose, type } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "createServer";
+  const isModalOpen = isOpen && type === "createGroup";
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -54,7 +54,7 @@ export const CreateServerModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post("/api/servers", values);
+      await axios.post("/api/group", values);
 
       form.reset();
       router.refresh();

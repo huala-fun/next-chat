@@ -1,13 +1,13 @@
 import { NextApiRequest } from "next";
 
-import { NextApiResponseServerIo } from "@/types";
+import { NextApiResponseIo } from "@/types";
 import { currentProfilePages } from "@/lib/current-profile-pages";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponseServerIo
+  res: NextApiResponseIo
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });

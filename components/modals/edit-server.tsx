@@ -30,19 +30,19 @@ import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "Server name is required."
+    message: "Group name is required."
   }),
   imageUrl: z.string().min(1, {
-    message: "Server image is required."
+    message: "Group image is required."
   })
 });
 
-export const EditServerModal = () => {
+export const EditModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "editServer";
-  const { server } = data;
+  const isModalOpen = isOpen && type === "editGroup";
+  const { group } = data;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -53,17 +53,17 @@ export const EditServerModal = () => {
   });
 
   useEffect(() => {
-    if (server) {
-      form.setValue("name", server.name);
-      form.setValue("imageUrl", server.imageUrl);
+    if (group) {
+      form.setValue("name", group.name);
+      form.setValue("imageUrl", group.imageUrl);
     }
-  }, [server, form]);
+  }, [group, form]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/servers/${server?.id}`, values);
+      await axios.patch(`/api/group/${group?.id}`, values);
 
       form.reset();
       router.refresh();

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { groupId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -14,9 +14,9 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const server = await db.server.delete({
+    const server = await db.group.delete({
       where: {
-        id: params.serverId,
+        id: params.groupId,
         profileId: profile.id,
       }
     });
@@ -30,7 +30,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { groupId: string } }
 ) {
   try {
     const profile = await currentProfile();
@@ -40,9 +40,9 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const server = await db.server.update({
+    const server = await db.group.update({
       where: {
-        id: params.serverId,
+        id: params.groupId,
         profileId: profile.id,
       },
       data: {

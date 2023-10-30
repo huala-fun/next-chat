@@ -13,7 +13,7 @@ import {
   CommandList
 } from "@/components/ui/command";
 
-interface ServerSearchProps {
+interface SearchProps {
   data: {
     label: string;
     type: "channel" | "member",
@@ -25,9 +25,9 @@ interface ServerSearchProps {
   }[]
 }
 
-export const ServerSearch = ({
+export const GroupSearch = ({
   data
-}: ServerSearchProps) => {
+}: SearchProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
@@ -47,11 +47,11 @@ export const ServerSearch = ({
     setOpen(false);
 
     if (type === "member") {
-      return router.push(`/group/${params?.serverId}/conversations/${id}`)
+      return router.push(`/group/${params?.groupId}/conversations/${id}`)
     }
 
     if (type === "channel") {
-      return router.push(`/group/${params?.serverId}/channel/${id}`)
+      return router.push(`/group/${params?.groupId}/channel/${id}`)
     }
   }
 
