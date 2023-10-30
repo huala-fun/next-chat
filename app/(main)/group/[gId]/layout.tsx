@@ -3,6 +3,7 @@ import { redirectToSignIn } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
 import { Sidebar } from "@/components/group/sidebar";
+import { getGroup } from "@/lib/redis";
 
 const IdLayout = async ({
   children,
@@ -12,27 +13,12 @@ const IdLayout = async ({
   params: { gId: string };
 }) => {
   const profile = await currentProfile();
-
   if (!profile) {
     return redirectToSignIn();
   }
-
-  const server = await db.group.findUnique({
-    where: {
-      id: params.gId,
-      members: {
-        some: {
-          profileId: profile.id
-        }
-      }
-    }
-  });
-
-
   return (
     <div className="min-h-screen">
-      <div
-        className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
+      <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <Sidebar groupId={params.gId} />
       </div>
       <main className="h-screen md:pl-60 bg-white dark:bg-[#313338] flex flex-col">
@@ -40,6 +26,6 @@ const IdLayout = async ({
       </main>
     </div>
   );
-}
+};
 
 export default IdLayout;

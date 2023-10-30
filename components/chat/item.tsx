@@ -7,24 +7,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Member, MemberRole, Profile } from "@prisma/client";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
-
-import { FaceIcon, ImageIcon, ResetIcon } from '@radix-ui/react-icons'
-
-import htmlParser from 'html-react-parser';
-
+import { ResetIcon } from "@radix-ui/react-icons";
+import htmlParser from "html-react-parser";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-
 import { UserAvatar } from "@/components/user-avatar";
 import { ActionTooltip } from "@/components/action-tooltip";
 import { cn } from "@/lib/utils";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
@@ -42,13 +33,13 @@ interface ChatItemProps {
   isUpdated: boolean;
   socketUrl: string;
   socketQuery: Record<string, string>;
-};
+}
 
 const roleIconMap = {
-  "GUEST": null,
-  "MODERATOR": <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
-  "ADMIN": <ShieldAlert className="h-4 w-4 ml-2 text-rose-500" />,
-}
+  GUEST: null,
+  MODERATOR: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
+  ADMIN: <ShieldAlert className="h-4 w-4 ml-2 text-rose-500" />,
+};
 
 const formSchema = z.object({
   content: z.string().min(1),
@@ -64,7 +55,7 @@ export const ChatItem = ({
   currentMember,
   isUpdated,
   socketUrl,
-  socketQuery
+  socketQuery,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const { onOpen } = useModal();
@@ -77,7 +68,7 @@ export const ChatItem = ({
     }
 
     router.push(`/group/${params?.groupId}/conversations/${member.id}`);
-  }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -94,8 +85,8 @@ export const ChatItem = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      content: content
-    }
+      content: content,
+    },
   });
 
   const isLoading = form.formState.isSubmitting;
@@ -114,12 +105,12 @@ export const ChatItem = ({
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     form.reset({
       content: content,
-    })
+    });
   }, [content, form]);
 
   const fileType = fileUrl?.split(".").pop();
@@ -135,13 +126,19 @@ export const ChatItem = ({
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
-        <div onClick={onMemberClick} className="cursor-pointer hover:drop-shadow-md transition">
+        <div
+          onClick={onMemberClick}
+          className="cursor-pointer hover:drop-shadow-md transition"
+        >
           <UserAvatar src={member.profile.imageUrl} />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <p onClick={onMemberClick} className="font-semibold text-sm hover:underline cursor-pointer">
+              <p
+                onClick={onMemberClick}
+                className="font-semibold text-sm hover:underline cursor-pointer"
+              >
                 {member.profile.name}
               </p>
               <ActionTooltip label={member.role}>
@@ -153,13 +150,13 @@ export const ChatItem = ({
             </span>
           </div>
 
-
           {isImage && (
-            <a
-              href={fileUrl}
-              target="_blank"
+            <div
+              onClick={() => {
+                onOpen("openImage", { src: fileUrl });
+              }}
               rel="noopener noreferrer"
-              className="relative aspect-square rounded-md mt-2 overflow-hidden border flex items-center bg-secondary h-48 w-48"
+              className="relative cursor-pointer aspect-square rounded-md mt-2 overflow-hidden border flex items-center bg-secondary h-48 w-48"
             >
               <Image
                 src={fileUrl}
@@ -167,9 +164,8 @@ export const ChatItem = ({
                 fill
                 className="object-cover"
               />
-            </a>
+            </div>
           )}
-
 
           {isPDF && (
             <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
@@ -185,15 +181,15 @@ export const ChatItem = ({
             </div>
           )}
 
-
           {!fileUrl && !isEditing && (
-            <div className={cn(
-              "text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line",
-              deleted && "italic text-zinc-500 dark:text-zinc-400 text-xs mt-1"
-            )}>
-              {
-                htmlParser(`${content}`)
-              }
+            <div
+              className={cn(
+                "text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line",
+                deleted &&
+                  "italic text-zinc-500 dark:text-zinc-400 text-xs mt-1"
+              )}
+            >
+              {htmlParser(`${content}`)}
               {isUpdated && !deleted && (
                 <span className="text-[10px] mx-2 text-zinc-500 dark:text-zinc-400">
                   (edited)
@@ -206,7 +202,8 @@ export const ChatItem = ({
             <Form {...form}>
               <form
                 className="flex items-center w-full gap-x-2 pt-2"
-                onSubmit={form.handleSubmit(onSubmit)}>
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
                 <FormField
                   control={form.control}
                   name="content"
@@ -234,11 +231,8 @@ export const ChatItem = ({
               </span>
             </Form>
           )}
-
-
         </div>
       </div>
-
 
       {canDeleteMessage && (
         <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
@@ -252,15 +246,17 @@ export const ChatItem = ({
           )}
           <ActionTooltip label="撤回">
             <ResetIcon
-              onClick={() => onOpen("withdrawMessage", {
-                apiUrl: `${socketUrl}/${id}`,
-                query: socketQuery,
-              })}
+              onClick={() =>
+                onOpen("withdrawMessage", {
+                  apiUrl: `${socketUrl}/${id}`,
+                  query: socketQuery,
+                })
+              }
               className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
             />
           </ActionTooltip>
         </div>
       )}
     </div>
-  )
-}
+  );
+};

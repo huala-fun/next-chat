@@ -1,7 +1,19 @@
 import { Channel, ChannelType, Group } from "@prisma/client";
 import { create } from "zustand";
 
-export type ModalType = "createGroup" | "invite" | "editGroup" | "members" | "createChannel" | "leaveGroup" | "deleteGroup" | "deleteChannel" | "editChannel" | "messageFile" | "withdrawMessage";
+export type ModalType =
+  | "openImage"
+  | "createGroup"
+  | "invite"
+  | "editGroup"
+  | "members"
+  | "createChannel"
+  | "leaveGroup"
+  | "deleteGroup"
+  | "deleteChannel"
+  | "editChannel"
+  | "messageFile"
+  | "withdrawMessage";
 
 interface ModalData {
   group?: Group;
@@ -9,6 +21,7 @@ interface ModalData {
   channelType?: ChannelType;
   apiUrl?: string;
   query?: Record<string, any>;
+  src?: string;
 }
 
 interface ModalStore {
@@ -24,5 +37,5 @@ export const useModal = create<ModalStore>((set) => ({
   data: {},
   isOpen: false,
   onOpen: (type, data = {}) => set({ isOpen: true, type, data }),
-  onClose: () => set({ type: null, isOpen: false })
+  onClose: () => set({ type: null, isOpen: false }),
 }));

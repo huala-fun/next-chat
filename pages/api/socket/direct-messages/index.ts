@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 
 import { NextApiResponseIo } from "@/types";
-import { currentProfilePages } from "@/lib/current-profile-pages";
+import { currentProfilePages } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 

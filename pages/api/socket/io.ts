@@ -21,7 +21,6 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseIo) => {
     });
     res.socket.server.io = io;
   }
-
   res.end();
 };
 

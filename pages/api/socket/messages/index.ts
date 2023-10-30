@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 
 import { NextApiResponseIo } from "@/types";
-import { currentProfilePages } from "@/lib/current-profile-pages";
+import { currentProfilePages } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 
@@ -30,6 +30,7 @@ export default async function handler(
     if (!content) {
       return res.status(400).json({ error: "Content missing" });
     }
+    
     const server = await db.group.findFirst({
       where: {
         id: groupId as string,
@@ -43,6 +44,7 @@ export default async function handler(
         members: true,
       },
     });
+    
     if (!server) {
       return res.status(404).json({ message: "Group not found" });
     }

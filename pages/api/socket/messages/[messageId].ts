@@ -2,7 +2,7 @@ import { NextApiRequest } from "next";
 import { MemberRole } from "@prisma/client";
 
 import { NextApiResponseIo } from "@/types";
-import { currentProfilePages } from "@/lib/current-profile-pages";
+import { currentProfilePages } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
 export default async function handler(
@@ -31,7 +31,7 @@ export default async function handler(
       return res.status(400).json({ error: "Channel ID missing" });
     }
 
-    const server = await db.group.findFirst({
+    const group = await db.group.findFirst({
       where: {
         id: groupId as string,
         members: {
@@ -45,7 +45,7 @@ export default async function handler(
       },
     });
 
-    if (!server) {
+    if (!group) {
       return res.status(404).json({ error: "Group not found" });
     }
 
@@ -60,7 +60,7 @@ export default async function handler(
       return res.status(404).json({ error: "Channel not found" });
     }
 
-    const member = server.members.find(
+    const member = group.members.find(
       (member) => member.profileId === profile.id
     );
 

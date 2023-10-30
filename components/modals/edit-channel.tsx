@@ -20,7 +20,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,20 +31,20 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
 
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: "Channel name is required."
-  }).refine(
-    name => name !== "general",
-    {
-      message: "Channel name cannot be 'general'"
-    }
-  ),
-  type: z.nativeEnum(ChannelType)
+  name: z
+    .string()
+    .min(1, {
+      message: "Channel name is required.",
+    })
+    .refine((name) => name !== "general", {
+      message: "Channel name cannot be 'general'",
+    }),
+  type: z.nativeEnum(ChannelType),
 });
 
 export const EditChannelModal = () => {
@@ -59,7 +59,7 @@ export const EditChannelModal = () => {
     defaultValues: {
       name: "",
       type: channel?.type || ChannelType.TEXT,
-    }
+    },
   });
 
   useEffect(() => {
@@ -76,8 +76,8 @@ export const EditChannelModal = () => {
       const url = qs.stringifyUrl({
         url: `/api/channel/${channel?.id}`,
         query: {
-          groupId: group?.id
-        }
+          groupId: group?.id,
+        },
       });
       await axios.patch(url, values);
 
@@ -87,20 +87,18 @@ export const EditChannelModal = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleClose = () => {
     form.reset();
     onClose();
-  }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            编辑频道
-          </DialogTitle>
+          <DialogTitle>编辑频道</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -110,10 +108,8 @@ export const EditChannelModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70"
-                    >
-                     频道名称
+                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                      频道名称
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -139,9 +135,7 @@ export const EditChannelModal = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger
-                          className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none"
-                        >
+                        <SelectTrigger className="bg-zinc-300/50 border-0 focus:ring-0 text-black ring-offset-0 focus:ring-offset-0 capitalize outline-none">
                           <SelectValue placeholder="选择频道类型" />
                         </SelectTrigger>
                       </FormControl>
@@ -152,7 +146,11 @@ export const EditChannelModal = () => {
                             value={type}
                             className="capitalize"
                           >
-                            {type === ChannelType.TEXT ? "文本" : type === ChannelType.AUDIO ? "语音" : "视频"}
+                            {type === ChannelType.TEXT
+                              ? "文本"
+                              : type === ChannelType.AUDIO
+                              ? "语音"
+                              : "视频"}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -162,7 +160,7 @@ export const EditChannelModal = () => {
                 )}
               />
             </div>
-            <DialogFooter >
+            <DialogFooter>
               <Button size={"sm"} disabled={isLoading}>
                 保存
               </Button>
@@ -171,5 +169,5 @@ export const EditChannelModal = () => {
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
