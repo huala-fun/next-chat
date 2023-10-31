@@ -10,6 +10,9 @@ import { nextAuthOption } from "@/lib/next-auth";
 
 const SetupPage = async () => {
   const session = await getServerSession(nextAuthOption);
+
+  console.log("session", session);
+  
   if (!session) {
     return redirect("/api/auth/signin");
   }
