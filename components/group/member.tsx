@@ -1,6 +1,6 @@
 "use client";
 
-import { Member, MemberRole, Profile, Group } from "@prisma/client";
+import { Member, MemberRole, User, Group } from "@prisma/client";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface MemberProps {
-  member: Member & { profile: Profile };
+  member: Member & { user: User };
   group: Group;
 }
 
@@ -40,7 +40,7 @@ export const GroupMember = ({
       )}
     >
       <UserAvatar 
-        src={member.profile.imageUrl}
+        src={member.user.imageUrl}
         className="h-8 w-8 md:h-8 md:w-8"
       />
       <p
@@ -49,7 +49,7 @@ export const GroupMember = ({
           params?.memberId === member.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white"
         )}
       >
-        {member.profile.name}
+        {member.user.name}
       </p>
       {icon}
     </button>

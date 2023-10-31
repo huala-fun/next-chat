@@ -1,9 +1,9 @@
 import { redirectToSignIn } from "@clerk/nextjs";
 
 import { db } from "@/lib/db";
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { Sidebar } from "@/components/group/sidebar";
-import { getGroup } from "@/lib/redis";
+import { getGroup } from "@/lib/redis/redis";
 
 const IdLayout = async ({
   children,
@@ -12,8 +12,8 @@ const IdLayout = async ({
   children: React.ReactNode;
   params: { gId: string };
 }) => {
-  const profile = await currentProfile();
-  if (!profile) {
+  const user = await currentUser();
+  if (!user) {
     return redirectToSignIn();
   }
   return (

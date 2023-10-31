@@ -1,9 +1,12 @@
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-
 import { db } from "@/lib/db";
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { NextId } from "@/lib/flake-id-gen";
+
+import { getGroupIdByInviteCode, getGroupMembesCache, setGroupMembersCache } from "@/lib/redis/cache/group";
+
+
 
 interface InviteCodePageProps {
   params: {
@@ -14,51 +17,40 @@ interface InviteCodePageProps {
 const InviteCodePage = async ({
   params
 }: InviteCodePageProps) => {
-  const profile = await currentProfile();
-
-  if (!profile) {
+  const user = await currentUser();
+  if (!user) {
     return redirectToSignIn();
   }
-
   if (!params.inviteCode) {
     return redirect("/");
   }
-
-  const existing = await db.group.findFirst({
-    where: {
-      inviteCode: params.inviteCode,
-      members: {
-        some: {
-          profileId: profile.id
-        }
-      }
-    }
-  });
-
-  if (existing) {
-    return redirect(`/group/${existing.id}`);
+  const groupId = await getGroupIdByInviteCode(params.inviteCode);
+  if (!groupId) {
+    return redirect("/");
   }
-
-  const server = await db.group.update({
+  const existing = await getGroupMembesCache(groupId as string, user.id);
+  if (existing) {
+    return redirect(`/group/${groupId}`);
+  }
+  const group = await db.group.update({
     where: {
-      inviteCode: params.inviteCode,
+      id: groupId as string,
     },
     data: {
       members: {
         create: [
           {
             id: NextId(),
-            profileId: profile.id,
+            userId: user.id,
           }
         ]
       }
     }
   });
-
-  if (server) {
-    return redirect(`/group/${server.id}`);
+  if (group) { // 说明加入成功，添加进 REDIS
+    setGroupMembersCache(groupId as string, user.id);
+    return redirect(`/group/${group.id}`);
   }
-
   return null;
 }
 

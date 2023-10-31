@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Member, MemberRole, Profile } from "@prisma/client";
+import { Member, MemberRole, User } from "@prisma/client";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 import { ResetIcon } from "@radix-ui/react-icons";
 import htmlParser from "html-react-parser";
@@ -24,7 +24,7 @@ interface ChatItemProps {
   id: string;
   content: string;
   member: Member & {
-    profile: Profile;
+    user: User;
   };
   timestamp: string;
   fileUrl: string | null;
@@ -130,7 +130,7 @@ export const ChatItem = ({
           onClick={onMemberClick}
           className="cursor-pointer hover:drop-shadow-md transition"
         >
-          <UserAvatar src={member.profile.imageUrl} />
+          <UserAvatar src={member.user.imageUrl} />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
@@ -139,7 +139,7 @@ export const ChatItem = ({
                 onClick={onMemberClick}
                 className="font-semibold text-sm hover:underline cursor-pointer"
               >
-                {member.profile.name}
+                {member.user.name}
               </p>
               <ActionTooltip label={member.role}>
                 {roleIconMap[member.role]}

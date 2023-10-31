@@ -1,6 +1,6 @@
 "use client";
 
-import { GroupWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithUsers } from "@/types";
 import { MemberRole } from "@prisma/client";
 import { 
   ChevronDown, 
@@ -22,7 +22,7 @@ import {
 import { useModal } from "@/hooks/use-modal-store";
 
 interface GroupHeaderProps {
-  group: GroupWithMembersWithProfiles;
+  group: GroupWithMembersWithUsers;
   role?: MemberRole;
 };
 

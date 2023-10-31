@@ -23,7 +23,7 @@ CREATE TABLE "Group" (
     "name" TEXT NOT NULL,
     "imageUrl" TEXT NOT NULL,
     "inviteCode" TEXT NOT NULL,
-    "profileId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -34,7 +34,7 @@ CREATE TABLE "Group" (
 CREATE TABLE "Member" (
     "id" TEXT NOT NULL,
     "role" "MemberRole" NOT NULL DEFAULT 'GUEST',
-    "profileId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "groupId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE "Channel" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "type" "ChannelType" NOT NULL DEFAULT 'TEXT',
-    "profileId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "groupId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -99,16 +99,16 @@ CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 CREATE UNIQUE INDEX "Group_inviteCode_key" ON "Group"("inviteCode");
 
 -- CreateIndex
-CREATE INDEX "Group_profileId_idx" ON "Group"("profileId");
+CREATE INDEX "Group_userId_idx" ON "Group"("userId");
 
 -- CreateIndex
-CREATE INDEX "Member_profileId_idx" ON "Member"("profileId");
+CREATE INDEX "Member_userId_idx" ON "Member"("userId");
 
 -- CreateIndex
 CREATE INDEX "Member_groupId_idx" ON "Member"("groupId");
 
 -- CreateIndex
-CREATE INDEX "Channel_profileId_idx" ON "Channel"("profileId");
+CREATE INDEX "Channel_userId_idx" ON "Channel"("userId");
 
 -- CreateIndex
 CREATE INDEX "Channel_groupId_idx" ON "Channel"("groupId");

@@ -2,7 +2,7 @@ import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { ChannelType } from "@prisma/client";
 
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { ChatHeader } from "@/components/chat/header";
 import { ChatInput } from "@/components/chat/input";
 import { ChatMessages } from "@/components/chat/messages";
@@ -19,9 +19,9 @@ interface ChannelIdPageProps {
 const ChannelIdPage = async ({
   params
 }: ChannelIdPageProps) => {
-  const profile = await currentProfile();
+  const user = await currentUser();
 
-  if (!profile) {
+  if (!user) {
     return redirectToSignIn();
   }
 
@@ -34,7 +34,7 @@ const ChannelIdPage = async ({
   const member = await db.member.findFirst({
     where: {
       groupId: params.groupId,
-      profileId: profile.id,
+      userId: user.id,
     }
   });
 

@@ -54,16 +54,11 @@ export const MessageFileModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: apiUrl || "",
-        query,
-      });
-
-      await axios.post(url, {
+      await axios.post(apiUrl || "", {
         ...values,
         content: values.fileUrl,
+        ...query
       });
-
       form.reset();
       router.refresh();
       handleClose();
@@ -105,7 +100,7 @@ export const MessageFileModal = () => {
               </div>
             </div>
             <DialogFooter className="">
-              <Button  size={"sm"} disabled={isLoading}>
+              <Button size={"sm"} disabled={isLoading}>
                 发送
               </Button>
             </DialogFooter>

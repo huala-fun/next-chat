@@ -4,22 +4,22 @@ import { UserButton } from "@clerk/nextjs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeSwitch from "@/components/theme-switch";
 import { Separator } from "@/components/ui/separator";
-import { currentProfile } from "@/lib/current-profile"
+import { currentUser } from "@/lib/current-user"
 import { db } from "@/lib/db";
 
 import { NavigationAction } from "./action";
 import { NavigationItem } from "./item";
 
 export const NavigationSidebar = async () => {
-  const profile = await currentProfile();
-  if (!profile) {
+  const user = await currentUser();
+  if (!user) {
     return redirect("/");
   }
   const groups = await db.group.findMany({
     where: {
       members: {
         some: {
-          profileId: profile.id
+          userId: user.id
         }
       }
     }

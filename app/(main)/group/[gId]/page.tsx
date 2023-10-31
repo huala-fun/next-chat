@@ -1,7 +1,7 @@
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
 interface IdPageProps {
@@ -13,8 +13,8 @@ interface IdPageProps {
 const IdPage = async ({
   params
 }: IdPageProps) => {
-  const profile = await currentProfile();
-  if (!profile) {
+  const user = await currentUser();
+  if (!user) {
     return redirectToSignIn();
   }
 
@@ -23,7 +23,7 @@ const IdPage = async ({
       id: params.gId,
       members: {
         some: {
-          profileId: profile.id,
+          userId: user.id,
         }
       }
     },

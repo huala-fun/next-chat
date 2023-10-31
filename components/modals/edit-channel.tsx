@@ -34,18 +34,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
+import { updateChannelSchema } from "@/schemas/channel";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, {
-      message: "Channel name is required.",
-    })
-    .refine((name) => name !== "general", {
-      message: "Channel name cannot be 'general'",
-    }),
-  type: z.nativeEnum(ChannelType),
-});
+const formSchema = updateChannelSchema
 
 export const EditChannelModal = () => {
   const { isOpen, onClose, type, data } = useModal();
@@ -59,6 +50,7 @@ export const EditChannelModal = () => {
     defaultValues: {
       name: "",
       type: channel?.type || ChannelType.TEXT,
+      groupId: ""
     },
   });
 
@@ -67,20 +59,16 @@ export const EditChannelModal = () => {
       form.setValue("name", channel.name);
       form.setValue("type", channel.type);
     }
-  }, [form, channel]);
+    if (group) {
+      form.setValue("groupId", group.id);
+    }
+  }, [form, channel, group]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: `/api/channel/${channel?.id}`,
-        query: {
-          groupId: group?.id,
-        },
-      });
-      await axios.patch(url, values);
-
+      await axios.patch(`/api/channel/${channel?.id}`, values);
       form.reset();
       router.refresh();
       onClose();
@@ -149,8 +137,8 @@ export const EditChannelModal = () => {
                             {type === ChannelType.TEXT
                               ? "文本"
                               : type === ChannelType.AUDIO
-                              ? "语音"
-                              : "视频"}
+                                ? "语音"
+                                : "视频"}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -17,6 +17,8 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
 export const DeleteChannelModal = () => {
+
+
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
@@ -28,15 +30,12 @@ export const DeleteChannelModal = () => {
   const onClick = async () => {
     try {
       setIsLoading(true);
-      const url = qs.stringifyUrl({
-        url: `/api/channel/${channel?.id}`,
-        query: {
-          groupId: group?.id,
+      await axios.delete("/api/channel/", {
+        data: {
+          channelId: channel?.id,
+          groupId: group?.id
         }
-      })
-
-      await axios.delete(url);
-
+      });
       onClose();
       router.refresh();
       router.push(`/group/${group?.id}`);

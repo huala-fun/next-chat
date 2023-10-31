@@ -1,59 +1,63 @@
 import { NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
 
-import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
+import { createChannelSchema } from "@/schemas/channel";
+import { currentUser } from "@/lib/current-user";
+import { setGroupChannelsCache } from "@/lib/redis/cache/group";
 
-export async function POST(
-  req: Request
-) {
+/**
+ *创建频道
+ * @param req
+ * @returns
+ */
+export const POST = async (req: Request) => {
   try {
-    const profile = await currentProfile();
-    const { name, type } = await req.json();
-    const { searchParams } = new URL(req.url);
+    const user = await currentUser();
+    const { name, type, groupId } = createChannelSchema.parse(await req.json());
 
-    const groupId = searchParams.get("groupId");
-
-    if (!profile) {
+    if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!groupId) {
-      return new NextResponse("Group ID missing", { status: 400 });
-    }
-
-    if (name === "general") {
-      return new NextResponse("Name cannot be 'general'", { status: 400 });
-    }
-
-    const server = await db.group.update({
+    const channel = {
+      id: NextId(),
+      userId: user.id,
+      name,
+      type,
+    };
+    const group = await db.group.update({
       where: {
         id: groupId,
         members: {
           some: {
-            profileId: profile.id,
+            userId: user.id,
             role: {
-              in: [MemberRole.ADMIN, MemberRole.MODERATOR]
-            }
-          }
-        }
+              in: [MemberRole.ADMIN, MemberRole.MODERATOR],
+            },
+          },
+        },
       },
       data: {
         channels: {
-          create: {
-            id: NextId(),
-            profileId: profile.id,
-            name,
-            type,
-          }
-        }
-      }
+          create: channel,
+        },
+      },
     });
-
-    return NextResponse.json(server);
+    // 将频道加入群组频道列表缓存中
+    await setGroupChannelsCache(groupId, channel.id);
+    return NextResponse.json(group);
   } catch (error) {
     console.log("CHANNELS_POST", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json(
+      {
+        mgs: "服务异常",
+        exception: error,
+      },
+      {
+        status: 500,
+      }
+    );
   }
-}
+};

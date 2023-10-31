@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis";
-import type { Profile } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 export const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -12,21 +12,27 @@ export enum redisKeys {
   CHANNEL = "CHANNEL",
 }
 
-export const currentProfile = async (userId: string) => {
-  const profileKey = `${redisKeys.PROFILE}:${userId}`;
+export const GenInviteCodeKey = (inviteCode: string) =>
+  `GROUP:INVITE:${inviteCode}`;
+
+export const GenGroupMembersKey = (groupId: string) =>
+  `GROUP:MEMBERS:${groupId}`;
+
+export const currentUser = async (userId: string) => {
+  const userKey = `${redisKeys.PROFILE}:${userId}`;
   try {
-    const redisProfile = await redis.get(profileKey);
-    if (redisProfile) {
-      return redisProfile as Profile;
+    const redisUser = await redis.get(userKey);
+    if (redisUser) {
+      return redisUser as User;
     }
   } catch (e) {}
   return null;
 };
 
-export const setProfile = async (userId: string, profile: any) => {
-  const profileKey = `${redisKeys.PROFILE}:${userId}`;
+export const setUser = async (userId: string, user: any) => {
+  const userKey = `${redisKeys.PROFILE}:${userId}`;
   try {
-    await redis.set(profileKey, profile);
+    await redis.set(userKey, user);
   } catch (e) {}
   return null;
 };

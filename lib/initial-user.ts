@@ -3,32 +3,30 @@ import { currentUser, redirectToSignIn } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { NextId } from "./flake-id-gen";
 
-import { currentProfile, redisKeys, setProfile } from "@/lib/redis";
-import { Profile } from "@prisma/client";
+import { currentUser as cacheUser, setUser } from "@/lib/redis/redis";
 
-export const initialProfile = async () => {
+export const initialUser = async () => {
   const user = await currentUser();
 
   if (!user) {
     return redirectToSignIn();
   }
-  const currProfile = await currentProfile(user.id);
-  if (currProfile) {
-    return currProfile;
+  const currUser = await cacheUser(user.id);
+  if (currUser) {
+    return currUser;
   }
 
-  const profile = await db.profile.findUnique({
+  const toFindUser = await db.user.findUnique({
     where: {
       userId: user.id,
     },
   });
-
-  if (profile) {
-    await setProfile(user.id, profile);
-    return profile;
+  if (toFindUser) {
+    await setUser(user.id, user);
+    return user;
   }
-  
-  const newProfile = await db.profile.create({
+
+  const newUser = await db.user.create({
     data: {
       id: NextId(),
       userId: user.id,
@@ -37,5 +35,5 @@ export const initialProfile = async () => {
       email: user.emailAddresses[0].emailAddress,
     },
   });
-  return newProfile;
+  return newUser;
 };

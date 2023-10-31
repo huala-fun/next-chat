@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { getOrCreateConversation } from "@/lib/conversation";
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { ChatHeader } from "@/components/chat/header";
 import { ChatMessages } from "@/components/chat/messages";
 import { ChatInput } from "@/components/chat/input";
@@ -23,19 +23,19 @@ const MemberIdPage = async ({
   params,
   searchParams,
 }: MemberIdPageProps) => {
-  const profile = await currentProfile();
+  const user = await currentUser();
 
-  if (!profile) {
+  if (!user) {
     return redirectToSignIn();
   }
 
   const currentMember = await db.member.findFirst({
     where: {
       groupId: params.groupId,
-      profileId: profile.id,
+      userId: user.id,
     },
     include: {
-      profile: true,
+      user: true,
     },
   });
 
@@ -51,13 +51,13 @@ const MemberIdPage = async ({
 
   const { memberOne, memberTwo } = conversation;
 
-  const otherMember = memberOne.profileId === profile.id ? memberTwo : memberOne;
+  const otherMember = memberOne.userId === user.id ? memberTwo : memberOne;
 
   return ( 
     <>
       <ChatHeader
-        imageUrl={otherMember.profile.imageUrl}
-        name={otherMember.profile.name}
+        imageUrl={otherMember.user.imageUrl}
+        name={otherMember.user.name}
         groupId={params.groupId}
         type="conversation"
       />
@@ -72,7 +72,7 @@ const MemberIdPage = async ({
         <>
           <ChatMessages
             member={currentMember}
-            name={otherMember.profile.name}
+            name={otherMember.user.name}
             chatId={conversation.id}
             type="conversation"
             apiUrl="/api/direct-message"
@@ -84,7 +84,7 @@ const MemberIdPage = async ({
             }}
           />
           <ChatInput
-            name={otherMember.profile.name}
+            name={otherMember.user.name}
             type="conversation"
             apiUrl="/api/socket/direct-messages"
             query={{

@@ -1,34 +1,44 @@
 import { NextResponse } from "next/server";
 
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
+import {
+  getInviteCodeByGroupId,
+  removeGourpMembersCache,
+  removeGroupInviteCodeCache,
+  setGroupInviteCodeCache,
+} from "@/lib/redis/cache/group";
 
 export async function PATCH(
   req: Request,
   { params }: { params: { groupId: string } }
 ) {
   try {
-    const profile = await currentProfile();
-
-    if (!profile) {
+    const user = await currentUser();
+    if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
     if (!params.groupId) {
       return new NextResponse("Group ID Missing", { status: 400 });
     }
 
+    const oldInviteCode = await getInviteCodeByGroupId(params.groupId);
+    if (oldInviteCode) {
+      await removeGroupInviteCodeCache(params.groupId, oldInviteCode as string);
+    }
+    // 重新生成邀请码
+    const inviteCode = NextId();
     const server = await db.group.update({
       where: {
         id: params.groupId,
-        profileId: profile.id,
+        userId: user.id,
       },
       data: {
-        inviteCode: NextId(),
+        inviteCode,
       },
     });
-
+    await setGroupInviteCodeCache(params.groupId, inviteCode);
     return NextResponse.json(server);
   } catch (error) {
     console.log("[SERVER_ID]", error);

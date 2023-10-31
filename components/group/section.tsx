@@ -3,7 +3,7 @@
 import { ChannelType, MemberRole } from "@prisma/client";
 import { Plus, Settings } from "lucide-react";
 
-import { GroupWithMembersWithProfiles } from "@/types";
+import { GroupWithMembersWithUsers } from "@/types";
 import { ActionTooltip } from "@/components/action-tooltip";
 import { useModal } from "@/hooks/use-modal-store";
 
@@ -12,7 +12,7 @@ interface SectionProps {
   role?: MemberRole;
   sectionType: "channels" | "members";
   channelType?: ChannelType;
-  group?: GroupWithMembersWithProfiles;
+  group?: GroupWithMembersWithUsers;
 };
 
 export const Section = ({
@@ -30,7 +30,7 @@ export const Section = ({
         {label}
       </p>
       {role !== MemberRole.GUEST && sectionType === "channels" && (
-        <ActionTooltip label="Create Channel" side="top">
+        <ActionTooltip label="创建频道" side="top">
           <button
             onClick={() => onOpen("createChannel", { channelType })}
             className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
@@ -40,7 +40,7 @@ export const Section = ({
         </ActionTooltip>
       )}
       {role === MemberRole.ADMIN && sectionType === "members" && (
-        <ActionTooltip label="Manage Members" side="top">
+        <ActionTooltip label="管理成员" side="top">
           <button
             onClick={() => onOpen("members", { group })}
             className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"

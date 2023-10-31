@@ -4,7 +4,7 @@ import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
 import { GroupHeader } from "./header";
@@ -32,9 +32,9 @@ const roleIconMap = {
 export const Sidebar = async ({
   groupId
 }: SidebarProps) => {
-  const profile = await currentProfile();
+  const user = await currentUser();
 
-  if (!profile) {
+  if (!user) {
     return redirect("/");
   }
 
@@ -50,7 +50,7 @@ export const Sidebar = async ({
       },
       members: {
         include: {
-          profile: true,
+          user: true,
         },
         orderBy: {
           role: "asc",
@@ -62,13 +62,13 @@ export const Sidebar = async ({
   const textChannels = group?.channels.filter((channel) => channel.type === ChannelType.TEXT)
   const audioChannels = group?.channels.filter((channel) => channel.type === ChannelType.AUDIO)
   const videoChannels = group?.channels.filter((channel) => channel.type === ChannelType.VIDEO)
-  const members = group?.members.filter((member) => member.profileId !== profile.id)
+  const members = group?.members.filter((member) => member.userId !== user.id)
 
   if (!group) {
     return redirect("/");
   }
 
-  const role = group.members.find((member) => member.profileId === profile.id)?.role;
+  const role = group.members.find((member) => member.userId === user.id)?.role;
 
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
@@ -112,7 +112,7 @@ export const Sidebar = async ({
                 type: "member",
                 data: members?.map((member) => ({
                   id: member.id,
-                  name: member.profile.name,
+                  name: member.user.name,
                   icon: roleIconMap[member.role],
                 }))
               },

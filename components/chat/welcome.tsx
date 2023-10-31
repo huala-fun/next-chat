@@ -17,7 +17,7 @@ export const ChatWelcome = ({
         </div>
       )}
       <p className="text-xl md:text-3xl font-bold">
-        {type === "channel" ? "Welcome to #" : ""}{name}
+        {type === "channel" ? "欢迎加入 #" : ""}{name} 频道
       </p>
       <p className="text-zinc-600 dark:text-zinc-400 text-sm">
         {type === "channel"

@@ -2,7 +2,7 @@ import { NextApiRequest } from "next";
 import { MemberRole } from "@prisma/client";
 
 import { NextApiResponseIo } from "@/types";
-import { currentProfilePages } from "@/lib/current-profile";
+import { currentUserPages } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
 export default async function handler(
@@ -15,11 +15,11 @@ export default async function handler(
   }
 
   try {
-    const profile = await currentProfilePages(req);
+    const user = await currentUserPages(req);
     const { messageId, groupId, channelId } = req.query;
     const { content } = req.body;
 
-    if (!profile) {
+    if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
@@ -36,7 +36,7 @@ export default async function handler(
         id: groupId as string,
         members: {
           some: {
-            profileId: profile.id,
+            userId: user.id,
           },
         },
       },
@@ -61,7 +61,7 @@ export default async function handler(
     }
 
     const member = group.members.find(
-      (member) => member.profileId === profile.id
+      (member) => member.userId === user.id
     );
 
     if (!member) {
@@ -76,7 +76,7 @@ export default async function handler(
       include: {
         member: {
           include: {
-            profile: true,
+            user: true,
           },
         },
       },
@@ -108,7 +108,7 @@ export default async function handler(
         include: {
           member: {
             include: {
-              profile: true,
+              user: true,
             },
           },
         },
@@ -130,7 +130,7 @@ export default async function handler(
         include: {
           member: {
             include: {
-              profile: true,
+              user: true,
             },
           },
         },

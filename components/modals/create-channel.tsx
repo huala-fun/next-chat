@@ -37,14 +37,14 @@ import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
-    message: "Channel name is required."
+    message: "品牌名称不能为空."
   }).refine(
     name => name !== "general",
     {
-      message: "Channel name cannot be 'general'"
+      message: "频道名称不能为 'general'"
     }
   ),
-  type: z.nativeEnum(ChannelType)
+  type: z.nativeEnum(ChannelType),
 });
 
 export const CreateChannelModal = () => {
@@ -71,18 +71,14 @@ export const CreateChannelModal = () => {
     }
   }, [channelType, form]);
 
+  
   const isLoading = form.formState.isSubmitting;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleCreateChannel = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: "/api/channel",
-        query: {
-          groupId: params?.groupId
-        }
+      await axios.post("/api/channel", {
+        ...values,
+        groupId: params?.gId
       });
-      await axios.post(url, values);
-
       form.reset();
       router.refresh();
       onClose();
@@ -105,7 +101,7 @@ export const CreateChannelModal = () => {
           </DialogTitle>
         </DialogHeader>
         <Form {...form} >
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleCreateChannel)} className="space-y-4">
             <div>
               <FormField
                 control={form.control}

@@ -1,55 +1,49 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
 
-import { currentProfile } from "@/lib/current-profile";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { deleteChannelSchema, updateChannelSchema } from "@/schemas/channel";
+import { removeGroupChannelsCache } from "@/lib/redis/cache/group";
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { channelId: string } }
-) {
+/**
+ * 删除群组
+ * @param req
+ * @param param1
+ * @returns
+ */
+export async function DELETE(req: NextRequest) {
   try {
-    const profile = await currentProfile();
-    const { searchParams } = new URL(req.url);
-
-    const groupId = searchParams.get("groupId");
-
-    if (!profile) {
+    const user = await currentUser();
+    const json = await req.json();
+    const { groupId, channelId } = deleteChannelSchema.parse(json);
+    if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    if (!groupId) {
-      return new NextResponse("Group ID missing", { status: 400 });
-    }
-
-    if (!params.channelId) {
-      return new NextResponse("Channel ID missing", { status: 400 });
-    }
-
     const server = await db.group.update({
       where: {
         id: groupId,
         members: {
           some: {
-            profileId: profile.id,
+            userId: user.id,
             role: {
               in: [MemberRole.ADMIN, MemberRole.MODERATOR],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       data: {
         channels: {
           delete: {
-            id: params.channelId,
+            id: channelId,
             name: {
               not: "general",
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     });
-
+    await removeGroupChannelsCache(groupId, channelId);
     return NextResponse.json(server);
   } catch (error) {
     console.log("[CHANNEL_ID_DELETE]", error);
@@ -59,29 +53,16 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { channelId: string } }
+  { params: { channelId } }: { params: { channelId: string } }
 ) {
   try {
-    const profile = await currentProfile();
-    const { name, type } = await req.json();
-    const { searchParams } = new URL(req.url);
+    const user = await currentUser();
+    const json = await req.json();
 
-    const groupId = searchParams.get("groupId");
+    const { name, type, groupId } = updateChannelSchema.parse(json);
 
-    if (!profile) {
+    if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    if (!groupId) {
-      return new NextResponse("Group ID missing", { status: 400 });
-    }
-
-    if (!params.channelId) {
-      return new NextResponse("Channel ID missing", { status: 400 });
-    }
-
-    if (name === "general") {
-      return new NextResponse("Name cannot be 'general'", { status: 400 });
     }
 
     const server = await db.group.update({
@@ -89,18 +70,18 @@ export async function PATCH(
         id: groupId,
         members: {
           some: {
-            profileId: profile.id,
+            userId: user.id,
             role: {
               in: [MemberRole.ADMIN, MemberRole.MODERATOR],
-            }
-          }
-        }
+            },
+          },
+        },
       },
       data: {
         channels: {
           update: {
             where: {
-              id: params.channelId,
+              id: channelId,
               NOT: {
                 name: "general",
               },
@@ -108,10 +89,10 @@ export async function PATCH(
             data: {
               name,
               type,
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      },
     });
 
     return NextResponse.json(server);

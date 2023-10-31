@@ -12,8 +12,6 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
 import { useModal } from "@/hooks/use-modal-store";
 import { EmojiPicker } from "@/components/emoji-picker";
 import { Textarea } from "../ui/textarea";
@@ -50,17 +48,19 @@ export const ChatInput = ({
   // TODO: Add file upload
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: apiUrl,
-        query,
+      await axios.post(apiUrl, {
+        data: {
+          ...values,
+          ...query
+        }
       });
-      await axios.post(url, values);
       form.reset();
       router.refresh();
     } catch (error) {
       console.log(error);
     }
   }
+
 
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.ctrlKey) {
