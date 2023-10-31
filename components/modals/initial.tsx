@@ -31,7 +31,7 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "Group name is required."
   }),
-  imageUrl: z.string().min(1, {
+  image: z.string().min(1, {
     message: "Group image is required."
   })
 });
@@ -49,7 +49,7 @@ export const InitialModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      imageUrl: "",
+      image: "",
     }
   });
 
@@ -88,7 +88,7 @@ export const InitialModal = () => {
               <div className="flex items-center justify-center text-center">
                 <FormField
                   control={form.control}
-                  name="imageUrl"
+                  name="image"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>

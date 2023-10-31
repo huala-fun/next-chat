@@ -1,14 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme";
 import { ModalProvider } from "@/components/providers/modal";
 import { SocketProvider } from "@/components/providers/socket";
 import { QueryProvider } from "@/components/providers/query";
-import { zhCN } from "@clerk/localizations";
+import { NextAuthProvider } from "@/components/providers/next-auth";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -25,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
-        <ClerkProvider localization={zhCN}>
+        <NextAuthProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -37,7 +36,7 @@ export default function RootLayout({
               <QueryProvider>{children}</QueryProvider>
             </SocketProvider>
           </ThemeProvider>
-        </ClerkProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

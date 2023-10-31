@@ -32,7 +32,7 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "Group name is required."
   }),
-  imageUrl: z.string().min(1, {
+  image: z.string().min(1, {
     message: "Group image is required."
   })
 });
@@ -48,14 +48,14 @@ export const EditModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      imageUrl: "",
+      image: "",
     }
   });
 
   useEffect(() => {
     if (group) {
       form.setValue("name", group.name);
-      form.setValue("imageUrl", group.imageUrl);
+      form.setValue("image", group.image);
     }
   }, [group, form]);
 
@@ -95,7 +95,7 @@ export const EditModal = () => {
               <div className="flex items-center justify-center text-center">
                 <FormField
                   control={form.control}
-                  name="imageUrl"
+                  name="image"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>

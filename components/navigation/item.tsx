@@ -8,13 +8,13 @@ import { ActionTooltip } from "@/components/action-tooltip";
 
 interface NavigationItemProps {
   id: string;
-  imageUrl: string;
+  image: string;
   name: string;
 };
 
 export const NavigationItem = ({
   id,
-  imageUrl,
+  image,
   name
 }: NavigationItemProps) => {
   const params = useParams();
@@ -45,7 +45,7 @@ export const NavigationItem = ({
         )}>
           <Image
             fill
-            src={imageUrl}
+            src={image}
             alt="Channel"
           />
         </div>

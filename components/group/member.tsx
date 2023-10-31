@@ -40,7 +40,7 @@ export const GroupMember = ({
       )}
     >
       <UserAvatar 
-        src={member.user.imageUrl}
+        src={member.user.image}
         className="h-8 w-8 md:h-8 md:w-8"
       />
       <p

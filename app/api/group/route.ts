@@ -13,7 +13,7 @@ import {
 
 export const POST = async (req: Request) => {
   try {
-    const { name, imageUrl } = await req.json();
+    const { name, image } = await req.json();
     const user = await currentUser();
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -30,7 +30,7 @@ export const POST = async (req: Request) => {
       id: NextId(),
       userId: user.id,
       name,
-      imageUrl,
+      image,
       inviteCode: NextId(),
       channels: {
         create: [channel],
