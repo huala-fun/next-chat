@@ -14,22 +14,22 @@ const SetupPage = async () => {
     return redirect("/api/auth/signin");
   }
 
-  const user = await initialUser();
+  // const server = await db.group.findFirst({
+  //   where: {
+  //     members: {
+  //       some: {
+  //         userId: session?.user?.email
+  //       }
+  //     }
+  //   }
+  // });
 
-  const server = await db.group.findFirst({
-    where: {
-      members: {
-        some: {
-          userId: user.id
-        }
-      }
-    }
-  });
+  // if (server) {
+  //   return redirect(`/group/${server.id}`);
+  // }
 
 
-  if (server) {
-    return redirect(`/group/${server.id}`);
-  }
+
   return (
     <Home />
   );
