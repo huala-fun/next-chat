@@ -2,8 +2,15 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import { UserAuthForm } from "./auth";
+import { UserAuthForm as EmailAuthForm } from "./email";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "登录| XianLiao",
@@ -22,15 +29,12 @@ export default function AuthenticationPage() {
           <TabsContent value="account">
             <Card>
               <CardHeader>
-                <div className="flex flex-col space-y-2 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    还没账号
-                    <Link className="text-blue-500" href={"/signup"}>
-                      去注册
-                    </Link>
-                  </p>
-                </div>
+                <CardDescription>&nbsp;</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <UserAuthForm />
+              </CardContent>
+              <CardFooter>
                 <p className="px-8 text-center text-sm text-muted-foreground">
                   By clicking continue, you agree to our{" "}
                   <Link
@@ -48,21 +52,20 @@ export default function AuthenticationPage() {
                   </Link>
                   .
                 </p>
-              </CardHeader>
+              </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="password">
             <Card>
               <CardHeader>
-                <div className="flex flex-col space-y-2 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    还没账号
-                    <Link className="text-blue-500" href={"/signup"}>
-                      去注册
-                    </Link>
-                  </p>
-                </div>
-                <UserAuthForm />
+                <CardDescription>
+                  验证即登录，未注册将自动创建网站账号
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <EmailAuthForm />
+              </CardContent>
+              <CardFooter>
                 <p className="px-8 text-center text-sm text-muted-foreground">
                   By clicking continue, you agree to our{" "}
                   <Link
@@ -80,8 +83,8 @@ export default function AuthenticationPage() {
                   </Link>
                   .
                 </p>
-              </CardHeader>
-            </Card> 
+              </CardFooter>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
