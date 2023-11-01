@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 
 import { signinSchema } from "@/schemas/auth";
+import { signIn } from "next-auth/react";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,19 +37,27 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
   });
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  const handleSignin = async (values: z.infer<typeof signinSchema>) => {
     setIsLoading(true);
-
-    setTimeout(() => {
+    try {
+      await signIn("usernamePassword", {
+        ...values,
+        redirect: false,
+      });
+    }catch(e){
+      console.log(e);
+    } finally {
       setIsLoading(false);
-    }, 3000);
-  }
+    }
+  };
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...signupForm}>
-        <form className="space-y-2">
+        <form
+          className="space-y-2"
+          onSubmit={signupForm.handleSubmit(handleSignin)}
+        >
           <FormField
             control={signupForm.control}
             name="email"
@@ -56,7 +65,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               <FormItem>
                 {/* <FormLabel>邮箱</FormLabel>  */}
                 <FormControl>
-                  <Input 
+                  <Input
                     type="email"
                     autoComplete="off"
                     placeholder="输入你的邮箱"
@@ -85,7 +94,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </FormItem>
             )}
           />
-          <Button className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -102,8 +111,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <span className="bg-background px-2 text-muted-foreground">或用</span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
+      <Button variant="outline" type="button" disabled={true}>
+        {false ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <GitHubLogoIcon className="mr-2 h-4 w-4" />

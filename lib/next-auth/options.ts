@@ -1,15 +1,14 @@
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { sendVerificationRequest } from "@/lib/sendemail";
-
 import { NextAuthOptions } from "next-auth";
 import { CustomPrismaAdapter } from "./adapter";
+import argon2 from "argon2";
 
-import { db } from "../db";
-
+import { prisma } from "../db";
 
 export const nextAuthOption: NextAuthOptions = {
-  adapter: CustomPrismaAdapter(db),
+  adapter: CustomPrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       id: "usernamePassword",
@@ -19,11 +18,19 @@ export const nextAuthOption: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log("credentials", credentials);
-        // if (res.ok && user) {
-        //   return user;
-        // }
-        return null;
+        if (!credentials?.username || !credentials?.password) {
+          return null;
+        }
+        const user = await prisma.user.findFirst({
+          where: {
+            email: credentials?.username,
+            password: await argon2.hash(credentials?.password),
+          },
+        });
+        if(user === null) {
+          throw new Error("User not found");
+        }
+        return user;
       },
     }),
     EmailProvider({

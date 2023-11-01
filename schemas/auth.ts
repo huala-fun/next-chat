@@ -24,7 +24,7 @@ export const signinSchema = z.object({
   email: z.string().email({
     message: "邮箱格式不正确.",
   }),
-  password: z.string().min(6, {
+  password: z.string().min(1, {
     message: "密码不能为空.",
   }),
 });
