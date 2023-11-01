@@ -1,12 +1,15 @@
 import EmailProvider from "next-auth/providers/email";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { sendVerificationRequest } from "@/lib/sendemail";
 
-import { db } from "@/lib/db";
 import { NextAuthOptions } from "next-auth";
+import { CustomPrismaAdapter } from "./adapter";
+
+import { db } from "../db";
+
+
 export const nextAuthOption: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: CustomPrismaAdapter(db),
   providers: [
     CredentialsProvider({
       id: "usernamePassword",
@@ -36,10 +39,19 @@ export const nextAuthOption: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/signin',
-    signOut: '/auth/signout',
-    error: '/auth/error', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', // (used for check email message)
-    newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
-  }
+    signIn: "/signin",
+    signOut: "/auth/signout",
+    // error: "/auth/error", // Error code passed in query string as ?error=
+    // verifyRequest: "/auth/verify-request",
+    // newUser: null,
+    // profile: "/auth/profile",
+  },
+  events: {
+    signIn: async ({ user, account, profile, isNewUser }) => {
+      console.log("signIn", user, account, profile, isNewUser);
+    },
+    createUser: async ({ user }) => {
+      console.log("createUser", user);
+    },
+  },
 };

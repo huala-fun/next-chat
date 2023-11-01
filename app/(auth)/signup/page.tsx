@@ -17,64 +17,32 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
-const formSchema = z.object({
-  email: z.string().min(2, {
-    message: "邮箱不能为空.",
-  }),
-});
+import { signupSchema } from "@/schemas/auth";
 
-const SignupForm = () => {
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const Page = () => {
+  const signupForm = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function handleSubmit(values: z.infer<typeof signupSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>邮箱</FormLabel>
-              <FormControl>
-                <Input
-                  autoComplete="off"
-                  placeholder="mail@example.com"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>这就是你的账号</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" size={"sm"}>登录</Button>
-      </form>
-    </Form>
-  );
-};
-
-const Page = () => {
   return (
     <Card className="w-96">
       <CardHeader>
@@ -82,8 +50,76 @@ const Page = () => {
         <CardDescription>通过邮箱注册账号</CardDescription>
       </CardHeader>
       <CardContent>
-        <SignupForm />
+        <Form {...signupForm}>
+          <form className="space-y-8">
+            <FormField
+              control={signupForm.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>邮箱</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      autoComplete="off"
+                      placeholder="mail@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>密码</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="off"
+                      placeholder="请输入你的密码"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>确认密码</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="off"
+                      placeholder="确认你的密码"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
       </CardContent>
+      <CardFooter className="flex justify-end gap-4">
+        <div>
+          已有账号?{" "}
+          <Link href="/signin" className="text-blue-500">
+            去登录
+          </Link>
+        </div>
+        <Button onClick={signupForm.handleSubmit(handleSubmit)} size={"sm"}>
+          注册
+        </Button>
+      </CardFooter>
     </Card>
   );
 };
