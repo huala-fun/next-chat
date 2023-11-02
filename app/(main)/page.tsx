@@ -8,6 +8,8 @@ import { serverSession } from "@/lib/next-auth/session";
  */
 export default async function HomePage() {
   const session = await serverSession();
+  console.log(session);
+  
   if (!session) {
     return redirect("/auth/signin");
   }

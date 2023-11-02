@@ -10,6 +10,8 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useModal } from "@/hooks/use-modal-store";
 import { EmojiPicker } from "@/components/emoji-picker";
 import { Textarea } from "../ui/textarea";
+import { currentUser } from "@/lib/redis/redis";
+import { useSession } from "next-auth/react";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -23,9 +25,9 @@ const formSchema = z.object({
 });
 
 export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
+  const { data: session, status } = useSession();
   const { onOpen } = useModal();
   const router = useRouter();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,6 +44,7 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
         data: {
           ...values,
           ...query,
+          userId: session?.user.id,
         },
       });
       form.reset();

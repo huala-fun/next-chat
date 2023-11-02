@@ -8,8 +8,6 @@ import {
   getGroupMembesCache,
 } from "@/lib/redis/cache/group";
 
-import { getSession } from "next-auth/react";
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseIo
@@ -20,20 +18,10 @@ export default async function handler(
   }
 
   try {
-    const session = await getSession();
-    if (!session) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    const { user } = session;
-    // if (!user) {
-    //   return res.status(401).json({ error: "Unauthorized" });
-    // }
+    const { content, fileUrl, groupId, channelId, userId } =
+      channelMessageSchema.parse(req.body.data);
 
-    const { content, fileUrl, groupId, channelId } = channelMessageSchema.parse(
-      req.body.data
-    );
-
-    const exist = getGroupMembesCache(groupId as string, user.id);
+    const exist = getGroupMembesCache(groupId as string, userId);
     if (!exist) {
       return res
         .status(404)
@@ -54,7 +42,7 @@ export default async function handler(
         content,
         fileUrl,
         channelId: channelId as string,
-        memberId: user.id,
+        memberId: userId,
       },
       include: {
         member: {

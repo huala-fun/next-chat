@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (

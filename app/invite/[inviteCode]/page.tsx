@@ -1,25 +1,24 @@
-import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 
-import { getGroupIdByInviteCode, getGroupMembesCache, setGroupMembersCache } from "@/lib/redis/cache/group";
+import {
+  getGroupIdByInviteCode,
+  getGroupMembesCache,
+  setGroupMembersCache,
+} from "@/lib/redis/cache/group";
 import { sessionUser } from "@/lib/next-auth/session";
-
-
 
 interface InviteCodePageProps {
   params: {
     inviteCode: string;
   };
-};
+}
 
-const InviteCodePage = async ({
-  params
-}: InviteCodePageProps) => {
+const InviteCodePage = async ({ params }: InviteCodePageProps) => {
   const user = await sessionUser();
   if (!user) {
-    return redirectToSignIn();
+    return redirect("/auth/signin");
   }
   if (!params.inviteCode) {
     return redirect("/");
@@ -42,16 +41,17 @@ const InviteCodePage = async ({
           {
             id: NextId(),
             userId: user.id,
-          }
-        ]
-      }
-    }
+          },
+        ],
+      },
+    },
   });
-  if (group) { // 说明加入成功，添加进 REDIS
+  if (group) {
+    // 说明加入成功，添加进 REDIS
     setGroupMembersCache(groupId as string, user.id);
     return redirect(`/group/${group.id}`);
   }
   return null;
-}
+};
 
 export default InviteCodePage;
