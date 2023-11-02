@@ -31,10 +31,7 @@ export default function AuthenticationPage() {
           </TabsList>
           <TabsContent value="account">
             <Card>
-              <CardHeader>
-                <CardDescription>&nbsp;</CardDescription>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <AccountAuthForm />
               </CardContent>
               <CardFooter>

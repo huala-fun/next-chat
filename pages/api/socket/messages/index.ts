@@ -1,7 +1,6 @@
 import { NextApiRequest } from "next";
 
 import { NextApiResponseIo } from "@/types";
-import { currentUserPages } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 import { channelMessageSchema } from "@/schemas/message";
@@ -9,6 +8,7 @@ import {
   getGroupChannelsCache,
   getGroupMembesCache,
 } from "@/lib/redis/cache/group";
+import { sessionUser } from "@/lib/next-auth/session";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +20,7 @@ export default async function handler(
   }
 
   try {
-    const user = await currentUserPages(req);
+    const user = await sessionUser();
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }

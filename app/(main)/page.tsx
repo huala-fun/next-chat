@@ -9,7 +9,7 @@ import { serverSession } from "@/lib/next-auth/session";
 export default async function HomePage() {
   const session = await serverSession();
   if (!session) {
-    return redirect("/api/auth/signin");
+    return redirect("/auth/signin");
   }
   return <Home />;
 }

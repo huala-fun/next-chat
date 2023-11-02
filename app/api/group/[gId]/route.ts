@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { sessionUser } from "@/lib/next-auth/session";
 
 export async function DELETE(
   req: Request,
   { params }: { params: { groupId: string } }
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -30,7 +30,7 @@ export async function PATCH(
   { params }: { params: { groupId: string } }
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const { name, image } = await req.json();
 
     if (!user) {

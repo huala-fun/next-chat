@@ -4,7 +4,6 @@ import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
 import { GroupHeader } from "./header";
@@ -12,6 +11,7 @@ import { GroupSearch } from "./search";
 import { Section } from "./section";
 import { GroupChannel } from "./channel";
 import { GroupMember } from "./member";
+import { sessionUser } from "@/lib/next-auth/session";
 
 interface SidebarProps {
   groupId: string;
@@ -20,20 +20,19 @@ interface SidebarProps {
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
   [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
-  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />
+  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
 };
 
 const roleIconMap = {
   [MemberRole.GUEST]: null,
-  [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
-  [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500" />
-}
+  [MemberRole.MODERATOR]: (
+    <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />
+  ),
+  [MemberRole.ADMIN]: <ShieldAlert className="h-4 w-4 mr-2 text-rose-500" />,
+};
 
-export const Sidebar = async ({
-  groupId
-}: SidebarProps) => {
-  const user = await currentUser();
-
+export const Sidebar = async ({ groupId }: SidebarProps) => {
+  const user = await sessionUser();
   if (!user) {
     return redirect("/");
   }
@@ -54,15 +53,21 @@ export const Sidebar = async ({
         },
         orderBy: {
           role: "asc",
-        }
-      }
-    }
+        },
+      },
+    },
   });
 
-  const textChannels = group?.channels.filter((channel) => channel.type === ChannelType.TEXT)
-  const audioChannels = group?.channels.filter((channel) => channel.type === ChannelType.AUDIO)
-  const videoChannels = group?.channels.filter((channel) => channel.type === ChannelType.VIDEO)
-  const members = group?.members.filter((member) => member.userId !== user.id)
+  const textChannels = group?.channels.filter(
+    (channel) => channel.type === ChannelType.TEXT
+  );
+  const audioChannels = group?.channels.filter(
+    (channel) => channel.type === ChannelType.AUDIO
+  );
+  const videoChannels = group?.channels.filter(
+    (channel) => channel.type === ChannelType.VIDEO
+  );
+  const members = group?.members.filter((member) => member.userId !== user.id);
 
   if (!group) {
     return redirect("/");
@@ -72,10 +77,7 @@ export const Sidebar = async ({
 
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-      <GroupHeader
-        group={group}
-        role={role}
-      />
+      <GroupHeader group={group} role={role} />
       <ScrollArea className="flex-1 px-3">
         <div className="mt-2">
           <GroupSearch
@@ -87,7 +89,7 @@ export const Sidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "语音频道",
@@ -96,7 +98,7 @@ export const Sidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "视频频道",
@@ -105,7 +107,7 @@ export const Sidebar = async ({
                   id: channel.id,
                   name: channel.name,
                   icon: iconMap[channel.type],
-                }))
+                })),
               },
               {
                 label: "成员",
@@ -114,7 +116,7 @@ export const Sidebar = async ({
                   id: member.id,
                   name: member.user.name,
                   icon: roleIconMap[member.role],
-                }))
+                })),
               },
             ]}
           />
@@ -190,16 +192,12 @@ export const Sidebar = async ({
             />
             <div className="space-y-[2px]">
               {members.map((member) => (
-                <GroupMember
-                  key={member.id}
-                  member={member}
-                  group={group}
-                />
+                <GroupMember key={member.id} member={member} group={group} />
               ))}
             </div>
           </div>
         )}
       </ScrollArea>
     </div>
-  )
-}
+  );
+};

@@ -4,7 +4,6 @@ import { createTransport } from "nodemailer";
 import { SendVerificationRequestParams } from "next-auth/providers/email";
 import { NextAuthOptions } from "next-auth";
 import { CustomPrismaAdapter } from "./adapter";
-import argon2 from "argon2";
 
 import { prisma } from "../db";
 import { NextId } from "../flake-id-gen";
@@ -28,8 +27,9 @@ export const nextAuthOption: NextAuthOptions = {
         }
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials?.username,
-            password: await argon2.hash(credentials?.password),
+            email: credentials.username,
+            password: credentials.password,
+            // password: await argon2.hash(credentials?.password),
           },
         });
         if (user === null) {
@@ -48,16 +48,19 @@ export const nextAuthOption: NextAuthOptions = {
       generateVerificationToken() {
         return NextId();
       },
-      // 发送验证码
+      /**
+       * 发送注册连接
+       * @param params
+       */
       async sendVerificationRequest(params: SendVerificationRequestParams) {
-        const { identifier, provider, token } = params;
+        const { identifier, url, provider, token } = params;
         try {
           const transport = createTransport(provider.server);
           const result = await transport.sendMail({
             to: identifier,
             from: provider.from,
             subject: `验证码`,
-            text: `验证码:${token}`,
+            text: `注册连接 :${url}`,
           });
           const failed = result.rejected.concat(result.pending).filter(Boolean);
           if (failed.length) {
@@ -80,8 +83,10 @@ export const nextAuthOption: NextAuthOptions = {
      * @param param0
      * @returns
      */
-    async jwt({ token, user, account, profile }) {
-      console.log("jwt", token, user, account, profile);
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+      }
       return token;
     },
     /**
@@ -89,8 +94,10 @@ export const nextAuthOption: NextAuthOptions = {
      * @param param0
      * @returns
      */
-    async session({ session, user, token }) {
-      console.log("session", session, user, token);
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.userId;
+      }
       return session;
     },
   },

@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { sessionUser } from "@/lib/next-auth/session";
 
 export async function DELETE(
   req: Request,
   { params }: { params: { memberId: string } }
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const { searchParams } = new URL(req.url);
 
     const groupId = searchParams.get("groupId");
@@ -64,7 +64,7 @@ export async function PATCH(
   { params }: { params: { memberId: string } }
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const { searchParams } = new URL(req.url);
     const { role } = await req.json();
 

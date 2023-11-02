@@ -1,9 +1,9 @@
 import { NextApiRequest } from "next";
 
 import { NextApiResponseIo } from "@/types";
-import { currentUserPages } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
+import { sessionUser } from "@/lib/next-auth/session";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   }
 
   try {
-    const user = await currentUserPages(req);
+    const user = await sessionUser();
     const { content, fileUrl } = req.body;
     const { conversationId } = req.query;
 

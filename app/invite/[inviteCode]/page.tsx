@@ -1,10 +1,10 @@
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { currentUser } from "@/lib/current-user";
 import { NextId } from "@/lib/flake-id-gen";
 
 import { getGroupIdByInviteCode, getGroupMembesCache, setGroupMembersCache } from "@/lib/redis/cache/group";
+import { sessionUser } from "@/lib/next-auth/session";
 
 
 
@@ -17,7 +17,7 @@ interface InviteCodePageProps {
 const InviteCodePage = async ({
   params
 }: InviteCodePageProps) => {
-  const user = await currentUser();
+  const user = await sessionUser();
   if (!user) {
     return redirectToSignIn();
   }

@@ -1,9 +1,6 @@
-import { redirectToSignIn } from "@clerk/nextjs";
-
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/current-user";
+import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/group/sidebar";
-import { getGroup } from "@/lib/redis/redis";
+import { sessionUser } from "@/lib/next-auth/session";
 
 const IdLayout = async ({
   children,
@@ -12,9 +9,9 @@ const IdLayout = async ({
   children: React.ReactNode;
   params: { gId: string };
 }) => {
-  const user = await currentUser();
+  const user = await sessionUser();
   if (!user) {
-    return redirectToSignIn();
+    return redirect("/auth/signin");
   }
   return (
     <div className="min-h-screen">

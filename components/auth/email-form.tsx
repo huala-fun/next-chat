@@ -32,56 +32,18 @@ export const EmailAuthForm = ({ className, ...props }: UserAuthFormProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const totast = useTopRightTotast();
 
-  const emailSiginSchema = z
-    .object({
-      email: z.string().email({
-        message: "邮箱格式不正确.",
-      }),
-      token: z.string(),
-      send: z.optional(z.boolean()),
-    })
-    .superRefine((form, ctx) => {
-      const { send, token = "" } = form;
-      if (!form.send && token.trim().length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "验证码不能为空.",
-          path: ["token"],
-        });
-      }
-    });
+  const emailSiginSchema = z.object({
+    email: z.string().email({
+      message: "邮箱格式不正确.",
+    }),
+  });
 
   const signupForm = useForm<z.infer<typeof emailSiginSchema>>({
     resolver: zodResolver(emailSiginSchema),
     defaultValues: {
       email: "",
-      token: "",
-      send: false,
     },
   });
-
-  /***
-   * 发送验证码
-   */
-  const handleSendVerificationEmail = async () => {
-    try {
-      await signIn("email", {
-        email: signupForm.watch("email"),
-        redirect: false,
-      });
-      totast({
-        title: "发送成功",
-        description: "请查收邮件进行验证.",
-      });
-    } catch (e) {
-      totast({
-        title: "发送失败",
-        description: "请重试.",
-      });
-    } finally {
-      signupForm.setValue("send", false);
-    }
-  };
 
   const handleSignin = async (values: z.infer<typeof emailSiginSchema>) => {
     setIsLoading(true);
@@ -91,10 +53,8 @@ export const EmailAuthForm = ({ className, ...props }: UserAuthFormProps) => {
         redirect: false,
       });
       totast({
-        title: "登录成功，跳转首页",
+        title: "注册链接，已发送到您的邮箱，请及时查收，注册",
       });
-      location.href = "/";
-      location.reload();
     } catch (e) {
       totast({
         title: "登录失败",
@@ -126,52 +86,6 @@ export const EmailAuthForm = ({ className, ...props }: UserAuthFormProps) => {
               </FormItem>
             )}
           />
-          <div className="flex gap-2">
-            <FormField
-              control={signupForm.control}
-              name="token"
-              render={({ field }) => (
-                <FormItem className="flex-3">
-                  {/* <FormLabel>邮箱</FormLabel>  */}
-                  <FormControl>
-                    <Input
-                      type="验证码"
-                      autoComplete="off"
-                      placeholder="验证码"
-                      {...field}
-                      onChange={(e) => {
-                        console.log(e);
-                        field.onChange(e);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={signupForm.control}
-              name="send"
-              render={({ field }) => (
-                <FormItem className="flex-3">
-                  <FormControl>
-                    <Button
-                      type="button"
-                      variant={"link"}
-                      onClick={(e) => {
-                        field.onChange(true);
-                        signupForm.handleSubmit(handleSendVerificationEmail)();
-                      }}
-                      className="flex-1"
-                    >
-                      发送验证码
-                    </Button>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           <Button
             type="button"
             onClick={signupForm.handleSubmit(handleSignin)}

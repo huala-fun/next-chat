@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { Message } from "@prisma/client";
 
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { sessionUser } from "@/lib/next-auth/session";
 
 const MESSAGES_BATCH = 10;
 
@@ -10,7 +10,7 @@ export async function GET(
   req: Request
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const { searchParams } = new URL(req.url);
 
     const cursor = searchParams.get("cursor");

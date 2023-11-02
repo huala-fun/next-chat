@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
 
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { deleteChannelSchema, updateChannelSchema } from "@/schemas/channel";
 import { removeGroupChannelsCache } from "@/lib/redis/cache/group";
+import { sessionUser } from "@/lib/next-auth/session";
 
 /**
  * 删除群组
@@ -14,7 +14,7 @@ import { removeGroupChannelsCache } from "@/lib/redis/cache/group";
  */
 export async function DELETE(req: NextRequest) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const json = await req.json();
     const { groupId, channelId } = deleteChannelSchema.parse(json);
     if (!user) {
@@ -56,7 +56,7 @@ export async function PATCH(
   { params: { channelId } }: { params: { channelId: string } }
 ) {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const json = await req.json();
 
     const { name, type, groupId } = updateChannelSchema.parse(json);

@@ -1,13 +1,12 @@
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { ChannelType } from "@prisma/client";
-
-import { currentUser } from "@/lib/current-user";
 import { ChatHeader } from "@/components/chat/header";
 import { ChatInput } from "@/components/chat/input";
 import { ChatMessages } from "@/components/chat/messages";
 import { MediaRoom } from "@/components/media-room";
 import { db } from "@/lib/db";
+import { sessionUser } from "@/lib/next-auth/session";
 
 interface ChannelIdPageProps {
   params: {
@@ -19,7 +18,7 @@ interface ChannelIdPageProps {
 const ChannelIdPage = async ({
   params
 }: ChannelIdPageProps) => {
-  const user = await currentUser();
+  const user = await sessionUser();
 
   if (!user) {
     return redirectToSignIn();

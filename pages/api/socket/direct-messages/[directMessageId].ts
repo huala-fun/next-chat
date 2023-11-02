@@ -2,8 +2,8 @@ import { NextApiRequest } from "next";
 import { MemberRole } from "@prisma/client";
 
 import { NextApiResponseIo } from "@/types";
-import { currentUserPages } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { sessionUser } from "@/lib/next-auth/session";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   }
 
   try {
-    const user = await currentUserPages(req);
+    const user = await sessionUser();
     const { directMessageId, conversationId } = req.query;
     const { content } = req.body;
 

@@ -1,10 +1,8 @@
 import { redirect } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ThemeSwitch from "@/components/theme-switch";
 import { Separator } from "@/components/ui/separator";
-import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
 import { NavigationAction } from "./action";

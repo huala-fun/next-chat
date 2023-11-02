@@ -3,27 +3,24 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { getOrCreateConversation } from "@/lib/conversation";
-import { currentUser } from "@/lib/current-user";
 import { ChatHeader } from "@/components/chat/header";
 import { ChatMessages } from "@/components/chat/messages";
 import { ChatInput } from "@/components/chat/input";
 import { MediaRoom } from "@/components/media-room";
+import { sessionUser } from "@/lib/next-auth/session";
 
 interface MemberIdPageProps {
   params: {
     memberId: string;
     groupId: string;
-  },
+  };
   searchParams: {
     video?: boolean;
-  }
+  };
 }
 
-const MemberIdPage = async ({
-  params,
-  searchParams,
-}: MemberIdPageProps) => {
-  const user = await currentUser();
+const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
+  const user = await sessionUser();
 
   if (!user) {
     return redirectToSignIn();
@@ -43,7 +40,10 @@ const MemberIdPage = async ({
     return redirect("/");
   }
 
-  const conversation = await getOrCreateConversation(currentMember.id, params.memberId);
+  const conversation = await getOrCreateConversation(
+    currentMember.id,
+    params.memberId
+  );
 
   if (!conversation) {
     return redirect(`/group/${params.groupId}`);
@@ -53,7 +53,7 @@ const MemberIdPage = async ({
 
   const otherMember = memberOne.userId === user.id ? memberTwo : memberOne;
 
-  return ( 
+  return (
     <>
       <ChatHeader
         image={otherMember.user.image}
@@ -62,11 +62,7 @@ const MemberIdPage = async ({
         type="conversation"
       />
       {searchParams.video && (
-        <MediaRoom
-          chatId={conversation.id}
-          video={true}
-          audio={true}
-        />
+        <MediaRoom chatId={conversation.id} video={true} audio={true} />
       )}
       {!searchParams.video && (
         <>
@@ -94,7 +90,7 @@ const MemberIdPage = async ({
         </>
       )}
     </>
-   );
-}
- 
+  );
+};
+
 export default MemberIdPage;

@@ -4,8 +4,8 @@ import { MemberRole } from "@prisma/client";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 import { createChannelSchema } from "@/schemas/channel";
-import { currentUser } from "@/lib/current-user";
 import { setGroupChannelsCache } from "@/lib/redis/cache/group";
+import { sessionUser } from "@/lib/next-auth/session";
 
 /**
  *创建频道
@@ -14,7 +14,7 @@ import { setGroupChannelsCache } from "@/lib/redis/cache/group";
  */
 export const POST = async (req: Request) => {
   try {
-    const user = await currentUser();
+    const user = await sessionUser();
     const { name, type, groupId } = createChannelSchema.parse(await req.json());
 
     if (!user) {
