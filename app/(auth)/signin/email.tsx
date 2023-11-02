@@ -3,11 +3,9 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,7 +15,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -40,6 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const handleSendVerificationEmail = async () => {
     try {
       await signIn("email", {
+        email: signupForm.watch("email"),
         redirect: false,
       });
     } catch (e) {
@@ -65,10 +63,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...signupForm}>
-        <form
-          className="space-y-4"
-          onSubmit={signupForm.handleSubmit(handleSignin)}
-        >
+        <form className="space-y-4" onSubmit={() => {}}>
           <FormField
             control={signupForm.control}
             name="email"
@@ -89,11 +84,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           />
           <div className="flex gap-2">
             <FormField
-             
               control={signupForm.control}
               name="verificationToken"
               render={({ field }) => (
-                <FormItem  className="flex-3">
+                <FormItem className="flex-3">
                   {/* <FormLabel>邮箱</FormLabel>  */}
 
                   <FormControl>
@@ -108,23 +102,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       }}
                     />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button
+              type="button"
               variant={"link"}
               onClick={(e) => {
-                handleSendVerificationEmail();
-                e.stopPropagation();
+
+                handleSendVerificationEmail()
+                
               }}
               className="flex-1"
             >
               发送验证码
             </Button>
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="button"
+            onClick={signupForm.handleSubmit(handleSignin)}
+            className="w-full"
+            disabled={isLoading}
+          >
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
