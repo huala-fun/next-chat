@@ -7,14 +7,9 @@ import { useModal } from "@/hooks/use-modal-store";
 
 export const NavigationAction = () => {
   const { onOpen } = useModal();
-
   return (
     <div>
-      <ActionTooltip
-        side="right"
-        align="center"
-        label="创建一个群组"
-      >
+      <ActionTooltip side="right" align="center" label="创建一个群组">
         <button
           onClick={() => onOpen("createGroup")}
           className="group flex items-center"
@@ -28,5 +23,5 @@ export const NavigationAction = () => {
         </button>
       </ActionTooltip>
     </div>
-  )
-}
+  );
+};

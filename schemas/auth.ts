@@ -28,18 +28,3 @@ export const signinSchema = z.object({
     message: "密码不能为空.",
   }),
 });
-
-export const emailSiginSchema = z.object({
-  email: z.string().email({
-    message: "邮箱格式不正确.",
-  }),
-  verificationToken: z.optional(z.string()),
-}).superRefine(({ verificationToken }, ctx) => {
-  if (!verificationToken) {
-    ctx.addIssue({
-      code: "custom",
-      message: "邮箱不能为空.",
-      path: ["verificationToken"],
-    });
-  }
-});

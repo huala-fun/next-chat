@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
-
-import { currentUser } from "@/lib/current-user";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
-
+import { sessionUser } from "@/lib/next-auth/session";
 import {
   setGroupChannelsCache,
   setGroupInviteCodeCache,
@@ -13,12 +11,12 @@ import {
 
 export const POST = async (req: Request) => {
   try {
-    const { name, image } = await req.json();
-    const user = await currentUser();
+    const user = await sessionUser();
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    
+    const { name, image } = await req.json();
+
     const memebr = {
       id: NextId(),
       userId: user.id,
@@ -28,7 +26,6 @@ export const POST = async (req: Request) => {
 
     const group = {
       id: NextId(),
-      userId: user.id,
       name,
       image,
       inviteCode: NextId(),
@@ -38,9 +35,13 @@ export const POST = async (req: Request) => {
       members: {
         create: [memebr],
       },
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
     };
-
-    const server = await db.group.create({
+    const server = await prisma.group.create({
       data: group,
     });
 

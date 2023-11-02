@@ -9,6 +9,8 @@ import { SocketProvider } from "@/components/providers/socket";
 import { QueryProvider } from "@/components/providers/query";
 import { NextAuthProvider } from "@/components/providers/next-auth";
 
+import { Toaster } from "@/components/ui/toaster";
+
 const font = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -35,6 +37,8 @@ export default function RootLayout({
               <ModalProvider />
               <QueryProvider>{children}</QueryProvider>
             </SocketProvider>
+
+            <Toaster />
           </ThemeProvider>
         </NextAuthProvider>
       </body>

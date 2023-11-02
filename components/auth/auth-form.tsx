@@ -3,12 +3,9 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -17,7 +14,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -26,7 +22,12 @@ import { signIn } from "next-auth/react";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+/**
+ * 账号登录表单
+ * @param param0
+ * @returns
+ */
+export const AccountAuthForm = ({ className, ...props }: UserAuthFormProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const signupForm = useForm<z.infer<typeof signinSchema>>({
@@ -44,7 +45,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         ...values,
         redirect: false,
       });
-    }catch(e){
+    } catch (e) {
       console.log(e);
     } finally {
       setIsLoading(false);
@@ -104,4 +105,4 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       </Form>
     </div>
   );
-}
+};

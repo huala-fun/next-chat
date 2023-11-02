@@ -67,7 +67,7 @@ model Group {
   inviteCode String @unique
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   members  Member[]
   channels Channel[]
