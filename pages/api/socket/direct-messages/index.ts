@@ -4,6 +4,7 @@ import { NextApiResponseIo } from "@/types";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
 import { sessionUser } from "@/lib/next-auth/session";
+import { getToken } from "next-auth/jwt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,11 +15,11 @@ export default async function handler(
   }
 
   try {
-    const user = await sessionUser();
+    const token = await getToken({ req });
     const { content, fileUrl } = req.body;
     const { conversationId } = req.query;
 
-    if (!user) {
+    if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
@@ -36,12 +37,12 @@ export default async function handler(
         OR: [
           {
             memberOne: {
-              userId: user.id,
+              userId: token.userId,
             },
           },
           {
             memberTwo: {
-              userId: user.id,
+              userId: token.userId,
             },
           },
         ],
@@ -65,7 +66,7 @@ export default async function handler(
     }
 
     const member =
-      conversation.memberOne.userId === user.id
+      conversation.memberOne.userId === token.userId
         ? conversation.memberOne
         : conversation.memberTwo;
 

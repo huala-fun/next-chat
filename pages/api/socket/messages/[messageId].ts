@@ -4,7 +4,8 @@ import { MemberRole } from "@prisma/client";
 import { NextApiResponseIo } from "@/types";
 import { db } from "@/lib/db";
 import { sessionUser } from "@/lib/next-auth/session";
-
+import { getToken } from "next-auth/jwt";
+const secret = process.env.NEXTAUTH_SECRET;
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseIo
@@ -15,9 +16,11 @@ export default async function handler(
   }
 
   try {
-    const user = await sessionUser();
+    const user = await getToken({ req, secret });
     const { messageId, groupId, channelId } = req.query;
     const { content } = req.body;
+
+    console.log("user", user);
 
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -36,7 +39,7 @@ export default async function handler(
         id: groupId as string,
         members: {
           some: {
-            userId: user.id,
+            userId: user.userId,
           },
         },
       },
@@ -55,15 +58,12 @@ export default async function handler(
         groupId: groupId as string,
       },
     });
-
     if (!channel) {
       return res.status(404).json({ error: "Channel not found" });
     }
-
     const member = group.members.find(
-      (member) => member.userId === user.id
+      (member) => member.userId === user.userId
     );
-
     if (!member) {
       return res.status(404).json({ error: "Member not found" });
     }

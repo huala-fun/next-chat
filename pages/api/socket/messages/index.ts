@@ -7,24 +7,28 @@ import {
   getGroupChannelsCache,
   getGroupMembesCache,
 } from "@/lib/redis/cache/group";
-
+import { getToken } from "next-auth/jwt";
+const secret = process.env.NEXTAUTH_SECRET;
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseIo
 ) {
+  const token = await getToken({ req, secret });
+
   // POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { content, fileUrl, groupId, channelId, userId } =
-      channelMessageSchema.parse(req.body.data);
+    const { content, fileUrl, groupId, channelId } = channelMessageSchema.parse(
+      req.body.data
+    );
 
     const exist = await db.member.findFirst({
       where: {
         groupId: groupId as string,
-        userId: userId as string,
+        userId: token?.userId,
       },
     });
     if (!exist) {

@@ -4,6 +4,7 @@ import { MemberRole } from "@prisma/client";
 import { NextApiResponseIo } from "@/types";
 import { db } from "@/lib/db";
 import { sessionUser } from "@/lib/next-auth/session";
+import { getToken } from "next-auth/jwt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,30 +15,27 @@ export default async function handler(
   }
 
   try {
-    const user = await sessionUser();
     const { directMessageId, conversationId } = req.query;
     const { content } = req.body;
-
-    if (!user) {
+    const token = await getToken({ req });
+    if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
     if (!conversationId) {
       return res.status(400).json({ error: "Conversation ID missing" });
     }
-
     const conversation = await db.conversation.findFirst({
       where: {
         id: conversationId as string,
         OR: [
           {
             memberOne: {
-              userId: user.id,
+              userId: token.userId,
             },
           },
           {
             memberTwo: {
-              userId: user.id,
+              userId: token.userId,
             },
           },
         ],
@@ -61,7 +59,7 @@ export default async function handler(
     }
 
     const member =
-      conversation.memberOne.userId === user.id
+      conversation.memberOne.userId === token.userId
         ? conversation.memberOne
         : conversation.memberTwo;
 

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
@@ -9,13 +9,19 @@ import {
   setGroupInviteCodeCache,
 } from "@/lib/redis/cache/group";
 import { sessionUser } from "@/lib/next-auth/session";
+import { getToken } from "next-auth/jwt";
+const secret = process.env.NEXTAUTH_SECRET;
 
 export async function PATCH(
-  req: Request,
+  req:NextRequest,
   { params }: { params: { groupId: string } }
 ) {
   try {
     const user = await sessionUser();
+
+    const res = await getToken({req,secret});;
+    console.log(res);
+    
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
