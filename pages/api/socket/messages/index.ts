@@ -21,7 +21,12 @@ export default async function handler(
     const { content, fileUrl, groupId, channelId, userId } =
       channelMessageSchema.parse(req.body.data);
 
-    const exist = getGroupMembesCache(groupId as string, userId);
+    const exist = await db.member.findFirst({
+      where: {
+        groupId: groupId as string,
+        userId: userId as string,
+      },
+    });
     if (!exist) {
       return res
         .status(404)
@@ -42,7 +47,7 @@ export default async function handler(
         content,
         fileUrl,
         channelId: channelId as string,
-        memberId: userId,
+        memberId: exist.id,
       },
       include: {
         member: {

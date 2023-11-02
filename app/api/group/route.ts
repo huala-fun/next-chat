@@ -44,8 +44,7 @@ export const POST = async (req: Request) => {
     const server = await prisma.group.create({
       data: group,
     });
-
-    await setGroupMembersCache(group.id, memebr.id);
+    await setGroupMembersCache(group.id, user.id, memebr.id);
     await setGroupChannelsCache(group.id, channel.id);
     await setGroupInviteCodeCache(group.inviteCode, group.id);
     return NextResponse.json(server);

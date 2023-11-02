@@ -31,24 +31,23 @@ const InviteCodePage = async ({ params }: InviteCodePageProps) => {
   if (existing) {
     return redirect(`/group/${groupId}`);
   }
+  const member = {
+    id: NextId(),
+    userId: user.id,
+  };
   const group = await db.group.update({
     where: {
       id: groupId as string,
     },
     data: {
       members: {
-        create: [
-          {
-            id: NextId(),
-            userId: user.id,
-          },
-        ],
+        create: [member],
       },
     },
   });
   if (group) {
     // 说明加入成功，添加进 REDIS
-    setGroupMembersCache(groupId as string, user.id);
+    setGroupMembersCache(groupId as string, user.id, member.id);
     return redirect(`/group/${group.id}`);
   }
   return null;

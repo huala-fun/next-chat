@@ -65,7 +65,8 @@ export const getInviteCodeByGroupId = async (groupId: string) => {
   return null;
 };
 
-const genGroupMembersKey = (groupId: string) => `GROUP:MEMBERS:${groupId}`;
+const genGroupMembersKey = (groupId: string, userId: string) =>
+  `GROUP:${groupId}:USER:${userId}:MEMBER:`;
 
 /**
  * 设置群组成员缓存
@@ -74,10 +75,11 @@ const genGroupMembersKey = (groupId: string) => `GROUP:MEMBERS:${groupId}`;
  */
 export const setGroupMembersCache = async (
   groupId: string,
+  userId: string,
   memberId: string
 ) => {
   try {
-    await redis.sadd(genGroupMembersKey(groupId), memberId);
+    await redis.set(genGroupMembersKey(groupId, userId), memberId);
   } catch (e) {
     console.log("setGroupMembesCacheError", e);
   }
@@ -90,10 +92,10 @@ export const setGroupMembersCache = async (
  */
 export const removeGourpMembersCache = async (
   groupId: string,
-  memberId: string
+  userId: string
 ) => {
   try {
-    await redis.srem(genGroupMembersKey(groupId), memberId);
+    await redis.del(genGroupMembersKey(groupId, userId));
   } catch (e) {
     console.log("setGourpChannelsCacheError", e);
   }
@@ -103,12 +105,10 @@ export const removeGourpMembersCache = async (
  * 获取群组成员缓存
  * @param inviteCode
  */
-export const getGroupMembesCache = async (
-  groupId: string,
-  memberId: string
-) => {
+export const getGroupMembesCache = async (groupId: string, userId: string) => {
   try {
-    redis.sismember(genGroupMembersKey(groupId), memberId);
+    const memberId = await redis.get(genGroupMembersKey(groupId, userId));
+    return memberId;
   } catch (e) {
     console.log("setGroupMembesCacheError", e);
   }
