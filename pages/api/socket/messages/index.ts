@@ -1,5 +1,4 @@
 import { NextApiRequest } from "next";
-
 import { NextApiResponseIo } from "@/types";
 import { db } from "@/lib/db";
 import { NextId } from "@/lib/flake-id-gen";
@@ -8,7 +7,8 @@ import {
   getGroupChannelsCache,
   getGroupMembesCache,
 } from "@/lib/redis/cache/group";
-import { sessionUser } from "@/lib/next-auth/session";
+
+import { getSession } from "next-auth/react";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,10 +20,14 @@ export default async function handler(
   }
 
   try {
-    const user = await sessionUser();
-    if (!user) {
+    const session = await getSession();
+    if (!session) {
       return res.status(401).json({ error: "Unauthorized" });
     }
+    const { user } = session;
+    // if (!user) {
+    //   return res.status(401).json({ error: "Unauthorized" });
+    // }
 
     const { content, fileUrl, groupId, channelId } = channelMessageSchema.parse(
       req.body.data
