@@ -25,7 +25,6 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-
     const { content, fileUrl, groupId, channelId } = channelMessageSchema.parse(
       req.body.data
     );
@@ -40,7 +39,6 @@ export default async function handler(
       groupId as string,
       channelId as string
     );
-
 
     if (!channelExist) {
       return res.status(404).json({ message: "Channel not found" });

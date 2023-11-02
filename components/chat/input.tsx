@@ -6,12 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useModal } from "@/hooks/use-modal-store";
 import { EmojiPicker } from "@/components/emoji-picker";
 import { Textarea } from "../ui/textarea";
@@ -27,12 +22,7 @@ const formSchema = z.object({
   content: z.string().min(1),
 });
 
-export const ChatInput = ({
-  apiUrl,
-  query,
-  name,
-  type,
-}: ChatInputProps) => {
+export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
   const { onOpen } = useModal();
   const router = useRouter();
 
@@ -40,7 +30,7 @@ export const ChatInput = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
-    }
+    },
   });
 
   const isLoading = form.formState.isSubmitting;
@@ -51,23 +41,22 @@ export const ChatInput = ({
       await axios.post(apiUrl, {
         data: {
           ...values,
-          ...query
-        }
+          ...query,
+        },
       });
       form.reset();
       router.refresh();
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   const handleEnter = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.ctrlKey) {
       event.preventDefault();
       form.handleSubmit(onSubmit)();
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -82,14 +71,20 @@ export const ChatInput = ({
                   <Textarea
                     disabled={isLoading}
                     className="bg-zinc-200/90 dark:bg-zinc-700/75 resize-none border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
-                    placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
+                    placeholder={`Message ${
+                      type === "conversation" ? name : "#" + name
+                    }`}
                     {...field}
-                    onKeyDown={(e) => handleEnter(e as unknown as KeyboardEvent)}
+                    onKeyDown={(e) =>
+                      handleEnter(e as unknown as KeyboardEvent)
+                    }
                   />
                   {/* 表情 */}
                   <div className="absolute top-7 right-8">
                     <EmojiPicker
-                      onChange={(emoji: string) => field.onChange(`${field.value} ${emoji}`)}
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value} ${emoji}`)
+                      }
                     />
                     <button
                       type="button"
@@ -106,5 +101,5 @@ export const ChatInput = ({
         />
       </form>
     </Form>
-  )
-}
+  );
+};

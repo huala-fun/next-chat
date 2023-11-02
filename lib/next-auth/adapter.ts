@@ -2,13 +2,6 @@ import { Prisma, PrismaClient, Session, User } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
 import { NextId } from "../flake-id-gen";
 
-export interface AdapterUser extends User {
-  id: string;
-  email: string;
-  emailVerified: Date | null;
-  createdAt: Date;
-}
-
 /** @return { import("next-auth/adapters").Adapter } */
 export function CustomPrismaAdapter(p: PrismaClient): Adapter {
   return {
