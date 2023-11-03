@@ -1,4 +1,4 @@
-FROM node AS base
+FROM node:latest AS base
 
 # Install dependencies only when needed
 FROM base AS deps
