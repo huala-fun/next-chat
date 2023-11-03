@@ -12,11 +12,9 @@ RUN apk add --no-cache --update nodejs npm && \
 # 2. 基于基础镜像安装项目依赖
 FROM base AS install
 WORKDIR $APP_PATH
-COPY package.json pnpm.lock.* ./
+COPY package.json pnpm-lock.yaml ./
 COPY prisma/schema.prisma ./prisma/
-RUN pnpm add -D prisma
 RUN pnpm install
-
 
 # 3. 基于基础镜像进行最终构建
 FROM base AS build
