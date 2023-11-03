@@ -43,10 +43,10 @@ export const nextAuthOption: NextAuthOptions = {
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
-      // 自定义校验 token 这里当作验证码
-      generateVerificationToken() {
-        return NextId();
-      },
+      // // 自定义校验 token 这里当作验证码
+      // generateVerificationToken() {
+      //   return NextId();
+      // },
       /**
        * 发送注册连接
        * @param params
@@ -55,11 +55,13 @@ export const nextAuthOption: NextAuthOptions = {
         const { identifier, url, provider, token } = params;
         try {
           const transport = createTransport(provider.server);
+          console.log(params);
+          
           const result = await transport.sendMail({
             to: identifier,
             from: provider.from,
-            subject: `验证码`,
-            text: `注册连接 :${url}`,
+            subject: `注册或登录`,
+            text: `注册或登录 :${url}`,
           });
           const failed = result.rejected.concat(result.pending).filter(Boolean);
           if (failed.length) {
