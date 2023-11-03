@@ -13,7 +13,8 @@ RUN apk add --no-cache --update nodejs npm && \
 FROM base AS install
 WORKDIR $APP_PATH
 COPY package.json pnpm.lock.* ./
-COPY prisma/schema.prisma ./prisma/schema.prism
+COPY prisma/schema.prisma ./prisma/
+RUN pnpm add -D prisma
 RUN pnpm install
 
 
