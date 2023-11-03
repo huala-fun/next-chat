@@ -4,7 +4,6 @@ import { createTransport } from "nodemailer";
 import { SendVerificationRequestParams } from "next-auth/providers/email";
 import { NextAuthOptions } from "next-auth";
 import { CustomPrismaAdapter } from "./adapter";
-
 import { prisma } from "../db";
 import { NextId } from "../flake-id-gen";
 

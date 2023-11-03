@@ -5,7 +5,6 @@ import { NextId } from "@/lib/flake-id-gen";
 import { channelMessageSchema } from "@/schemas/message";
 import {
   getGroupChannelsCache,
-  getGroupMembesCache,
 } from "@/lib/redis/cache/group";
 import { getToken } from "next-auth/jwt";
 const secret = process.env.NEXTAUTH_SECRET;

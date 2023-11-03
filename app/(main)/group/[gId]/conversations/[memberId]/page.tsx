@@ -1,4 +1,3 @@
-import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -21,9 +20,8 @@ interface MemberIdPageProps {
 
 const MemberIdPage = async ({ params, searchParams }: MemberIdPageProps) => {
   const user = await sessionUser();
-
   if (!user) {
-    return redirectToSignIn();
+    return redirect("/auth/sign");
   }
 
   const currentMember = await db.member.findFirst({
