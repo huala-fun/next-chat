@@ -1,24 +1,37 @@
-# base image
-FROM node:lts
+# 1. 构建基础镜像
+FROM alpine:3.15 AS base
+#纯净版镜像
 
-# create & set working directory
-RUN mkdir -p /usr/src
-WORKDIR /usr/src
+ENV NODE_ENV=production \
+  APP_PATH=/app
 
-# copy source files
-COPY . /usr/src
+WORKDIR $APP_PATH
 
-COPY package*.json ./
-COPY prisma ./prisma/
+# 使用国内镜像，加速下面 apk add下载安装alpine不稳定情况
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-RUN apt-get -qy update && apt-get -qy install openssl
+# 使用apk命令安装 nodejs 和 yarn
+RUN apk add --no-cache --update nodejs npm && \
+    npm install -g pnpm
 
-# install dependencies
+# 2. 基于基础镜像安装项目依赖
+FROM base AS install
+
+COPY package.json pnpm.lock ./
+
 RUN pnpm install
-RUN pnpm install @prisma/client
+
+# 3. 基于基础镜像进行最终构建
+FROM base
+
+# 拷贝 上面生成的 node_modules 文件夹复制到最终的工作目录下
+COPY --from=install $APP_PATH/node_modules ./node_modules
+
+# 拷贝当前目录下的所有文件(除了.dockerignore里排除的)，都拷贝到工作目录下
 COPY . .
-# start app
-RUN pnpm run build
+
+RUN pnpm build
 
 EXPOSE 3000
-CMD pnpm run start
+
+CMD ["pnpm", "start"]
