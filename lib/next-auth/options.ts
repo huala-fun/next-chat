@@ -5,7 +5,6 @@ import { SendVerificationRequestParams } from "next-auth/providers/email";
 import { NextAuthOptions } from "next-auth";
 import { CustomPrismaAdapter } from "./adapter";
 import { prisma } from "../db";
-import { NextId } from "../flake-id-gen";
 
 export const nextAuthOption: NextAuthOptions = {
   adapter: CustomPrismaAdapter(prisma),
@@ -41,7 +40,15 @@ export const nextAuthOption: NextAuthOptions = {
      * 使用 EmailProvider 邮箱验证码登录
      */
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
       from: process.env.EMAIL_FROM,
       // // 自定义校验 token 这里当作验证码
       // generateVerificationToken() {
@@ -56,7 +63,7 @@ export const nextAuthOption: NextAuthOptions = {
         try {
           const transport = createTransport(provider.server);
           console.log(params);
-          
+
           const result = await transport.sendMail({
             to: identifier,
             from: provider.from,
@@ -70,6 +77,8 @@ export const nextAuthOption: NextAuthOptions = {
             );
           }
         } catch (e) {
+          console.log(e);
+
           throw new Error(`Email(s)  could not be sent`);
         }
       },
