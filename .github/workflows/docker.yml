@@ -23,8 +23,8 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
       - name: Build Docker image
         run: |
-          docker build -t myapp:latest .
+          docker build -t next-chat:latest .
       - name: Push Docker image
         run: |
-          docker tag myapp:latest ${{ env.DOCKER_USERNAME }}/myapp:latest
-          docker push ${{ env.DOCKER_USERNAME }}/myapp:latest
+          docker tag next-chat:latest ${{ env.DOCKER_USERNAME }}/next-chat:latest
+          docker push ${{ env.DOCKER_USERNAME }}/next-chat:latest
