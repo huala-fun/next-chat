@@ -45,6 +45,11 @@ const formSchema = z.object({
   content: z.string().min(1),
 });
 
+/**
+ * 消息组件
+ * @param param0
+ * @returns
+ */
 export const ChatItem = ({
   id,
   content,
@@ -57,28 +62,28 @@ export const ChatItem = ({
   socketUrl,
   socketQuery,
 }: ChatItemProps) => {
+  
   const [isEditing, setIsEditing] = useState(false);
   const { onOpen } = useModal();
   const params = useParams();
   const router = useRouter();
 
+  // 点击用户头像
   const onMemberClick = () => {
     if (member.id === currentMember.id) {
       return;
     }
-
     router.push(`/group/${params?.groupId}/conversations/${member.id}`);
   };
 
+  // 处理 esc 退出编辑
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === "Escape" || event.keyCode === 27) {
         setIsEditing(false);
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
-
     return () => window.removeEventListener("keyDown", handleKeyDown);
   }, []);
 
@@ -89,6 +94,7 @@ export const ChatItem = ({
     },
   });
 
+  // 消息处理
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -97,9 +103,7 @@ export const ChatItem = ({
         url: `${socketUrl}/${id}`,
         query: socketQuery,
       });
-
       await axios.patch(url, values);
-
       form.reset();
       setIsEditing(false);
     } catch (error) {

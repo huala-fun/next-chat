@@ -63,6 +63,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.47.0",
+    "reconnecting-websocket": "^4.4.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "tailwind-merge": "^1.14.0",
@@ -75,12 +76,12 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.13",
-    "@types/uuid": "^9.0.2",
-    "prisma": "^5.5.2",
     "@types/flake-idgen": "^0.1.33",
     "@types/node": "20.5.1",
+    "@types/nodemailer": "^6.4.13",
     "@types/react": "18.2.20",
-    "@types/react-dom": "18.2.7"
+    "@types/react-dom": "18.2.7",
+    "@types/uuid": "^9.0.2",
+    "prisma": "^5.5.2"
   }
 }
