@@ -11,6 +11,7 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 import { ChatWelcome } from "./welcome";
 import { ChatItem } from "./item";
+import { useSocket } from "../providers/socket";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -43,6 +44,8 @@ export const ChatMessages = ({
   paramValue,
   type,
 }: ChatMessagesProps) => {
+  const { subChannel } = useSocket();
+  subChannel("test_channel");
   // 查询 key
   const queryKey = `chat:${chatId}`;
   // 只关注新增的消息
@@ -103,8 +106,7 @@ export const ChatMessages = ({
           ) : (
             <button
               onClick={() => fetchNextPage()}
-              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
-            >
+              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition">
               加载上一条消息
             </button>
           )}

@@ -31,7 +31,17 @@ export const SocketProvider = ({
 }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const subChannel = () => {};
+
+  const subChannel = async (channelName: string) => {
+    const res = await fetch("http://localhost:12312/api/ws/channel/sub", {
+      method: "POST",
+      body: JSON.stringify({
+        identityId,
+        channelName,
+      }),
+    });
+    console.log(res);
+  };
 
   useEffect(() => {
     const socketInstance = new (ClientIO as any)(process.env.NEXTAUTH_URL!, {
@@ -39,7 +49,16 @@ export const SocketProvider = ({
       addTrailingSlash: false,
     });
     const socket = new WebSocket(`ws://localhost:12312/api/ws/${identityId}`);
-    console.log(socket);
+
+    // 打开 连接
+    socket.addEventListener("open", function (event) {
+      console.log(event);
+    });
+
+    // 监听动态 数据
+    socket.addEventListener("message", function (event) {
+      console.log("Message from server ", event.data);
+    });
 
     socketInstance.on("connect", () => {
       setIsConnected(true);

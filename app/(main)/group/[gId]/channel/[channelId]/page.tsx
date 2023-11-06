@@ -47,6 +47,8 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
       />
       {channel.type === ChannelType.TEXT && (
         <>
+          {/* 渲染消息组件 */}
+          
           <ChatMessages
             member={member}
             name={channel.name}
@@ -61,6 +63,8 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
             paramKey="channelId"
             paramValue={channel.id}
           />
+
+          {/* 发送消息组件 */}
           <ChatInput
             name={channel.name}
             type="channel"

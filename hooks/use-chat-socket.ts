@@ -34,7 +34,7 @@ export const useChatSocket = ({
     }
 
     socket.on(updateKey, (message: MessageWithMemberWithUser) => {
-
+      // 修改之前的数据
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;
@@ -59,7 +59,7 @@ export const useChatSocket = ({
     });
     
     socket.on(addKey, (message: MessageWithMemberWithUser) => {
-
+      
       queryClient.setQueryData([queryKey], (oldData: any) => {
 
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
